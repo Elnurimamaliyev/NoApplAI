@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notifications Dropdown - NoApplAI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Montserrat:wght@700;800&amp;display=swap" rel="stylesheet">
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #F8F9FC;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 20px;
+      min-height: 100%;
+    }
+    h1, h2, h3, h4 {
+      font-family: 'Montserrat', sans-serif;
+    }
+    .notification-item {
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .notification-item:hover {
+      background-color: #E6FAFB;
+    }
+    .notification-item.unread {
+      background-color: #F8FDFF;
+    }
+    .notification-dropdown {
+      width: 350px;
+      max-height: 500px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+      border: 1px solid #E5E7EB;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .notification-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .notification-list::-webkit-scrollbar {
+      width: 6px;
+    }
+    .notification-list::-webkit-scrollbar-track {
+      background: #F8F9FC;
+      border-radius: 10px;
+    }
+    .notification-list::-webkit-scrollbar-thumb {
+      background: #D1D5DB;
+      border-radius: 10px;
+    }
+    .notification-list::-webkit-scrollbar-thumb:hover {
+      background: #9CA3AF;
+    }
+    .unread-dot {
+      width: 8px;
+      height: 8px;
+      background: #5CE1E6;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .notification-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 16px;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body>
+  <main class="notification-dropdown"><!-- Header -->
+   <div class="p-4 border-b border-gray-200 flex items-center justify-between bg-white sticky top-0 z-10">
+    <h2 id="dropdown-title" class="text-lg font-bold text-[#0A2540]">Notifications</h2><button id="mark-read-btn" class="text-xs font-semibold text-[#5CE1E6] hover:text-[#4AC9CE] transition">Mark all as read</button>
+   </div><!-- Notification List -->
+   <div class="notification-list"><!-- Notification 1 - Document Upload (Unread) -->
+    <div class="notification-item unread p-4 flex items-start space-x-3 border-b border-gray-100">
+     <div class="unread-dot mt-2"></div>
+     <div class="notification-icon bg-green-100">
+      <svg class="w-5 h-5 text-green-600" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+      </svg>
+     </div>
+     <div class="flex-1 min-w-0">
+      <p id="notification-1" class="text-sm font-medium text-[#0A2540] mb-1">Transcript uploaded successfully</p>
+      <p class="text-xs text-gray-500">2h ago</p>
+     </div>
+    </div><!-- Notification 2 - AI Recommendation (Unread) -->
+    <div class="notification-item unread p-4 flex items-start space-x-3 border-b border-gray-100">
+     <div class="unread-dot mt-2"></div>
+     <div class="notification-icon bg-cyan-100">
+      <svg class="w-5 h-5 text-cyan-600" fill="currentColor" viewbox="0 0 20 20"><path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z" />
+      </svg>
+     </div>
+     <div class="flex-1 min-w-0">
+      <p id="notification-2" class="text-sm font-medium text-[#0A2540] mb-1">New AI recommended program: Harvard — MSc Engineering</p>
+      <p class="text-xs text-gray-500">3h ago</p>
+     </div>
+    </div><!-- Notification 3 - Deadline Warning (Unread) -->
+    <div class="notification-item unread p-4 flex items-start space-x-3 border-b border-gray-100">
+     <div class="unread-dot mt-2"></div>
+     <div class="notification-icon bg-yellow-100">
+      <svg class="w-5 h-5 text-yellow-600" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+      </svg>
+     </div>
+     <div class="flex-1 min-w-0">
+      <p id="notification-3" class="text-sm font-medium text-[#0A2540] mb-1">Application deadline approaching: Stanford MBA — 3 days left</p>
+      <p class="text-xs text-gray-500">5h ago</p>
+     </div>
+    </div><!-- Notification 4 - Interview Scheduled -->
+    <div class="notification-item p-4 flex items-start space-x-3 border-b border-gray-100">
+     <div style="width: 8px;"></div>
+     <div class="notification-icon bg-purple-100">
+      <svg class="w-5 h-5 text-purple-600" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd" />
+      </svg>
+     </div>
+     <div class="flex-1 min-w-0">
+      <p id="notification-4" class="text-sm font-medium text-[#0A2540] mb-1">Interview scheduled: Cambridge MSc AI — Jan 25 at 2:00 PM</p>
+      <p class="text-xs text-gray-500">8h ago</p>
+     </div>
+    </div><!-- Notification 5 - Offer Received -->
+    <div class="notification-item p-4 flex items-start space-x-3 border-b border-gray-100">
+     <div style="width: 8px;"></div>
+     <div class="notification-icon bg-blue-100">
+      <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewbox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+      </svg>
+     </div>
+     <div class="flex-1 min-w-0">
+      <p id="notification-5" class="text-sm font-medium text-[#0A2540] mb-1">Offer letter received from Imperial College London</p>
+      <p class="text-xs text-gray-500">1d ago</p>
+     </div>
+    </div><!-- Notification 6 - Missing Document -->
+    <div class="notification-item p-4 flex items-start space-x-3 border-b border-gray-100">
+     <div style="width: 8px;"></div>
+     <div class="notification-icon bg-red-100">
+      <svg class="w-5 h-5 text-red-600" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+      </svg>
+     </div>
+     <div class="flex-1 min-w-0">
+      <p id="notification-6" class="text-sm font-medium text-[#0A2540] mb-1">Missing document: English test certificate required</p>
+      <p class="text-xs text-gray-500">2d ago</p>
+     </div>
+    </div><!-- Notification 7 - Profile Complete -->
+    <div class="notification-item p-4 flex items-start space-x-3">
+     <div style="width: 8px;"></div>
+     <div class="notification-icon bg-gray-100">
+      <svg class="w-5 h-5 text-gray-600" fill="currentColor" viewbox="0 0 20 20"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
+      </svg>
+     </div>
+     <div class="flex-1 min-w-0">
+      <p id="notification-7" class="text-sm font-medium text-[#0A2540] mb-1">Your profile is 85% complete. Add more details!</p>
+      <p class="text-xs text-gray-500">3d ago</p>
+     </div>
+    </div>
+   </div><!-- Footer -->
+   <footer class="p-3 border-t border-gray-200 bg-white text-center sticky bottom-0"><a id="view-all-link" href="#" class="text-sm font-semibold text-[#5CE1E6] hover:text-[#4AC9CE] transition">View All Notifications</a>
+   </footer>
+  </main>
+  <script>
+    const defaultConfig = {
+      background_color: '#FFFFFF',
+      surface_color: '#F8F9FC',
+      text_color: '#0A2540',
+      primary_action_color: '#5CE1E6',
+      secondary_action_color: '#0A2540',
+      font_family: 'Inter',
+      font_size: 14,
+      dropdown_title: 'Notifications',
+      mark_read_button: 'Mark all as read',
+      notification_1: 'Transcript uploaded successfully',
+      notification_2: 'New AI recommended program: Harvard — MSc Engineering',
+      notification_3: 'Application deadline approaching: Stanford MBA — 3 days left',
+      notification_4: 'Interview scheduled: Cambridge MSc AI — Jan 25 at 2:00 PM',
+      notification_5: 'Offer letter received from Imperial College London',
+      notification_6: 'Missing document: English test certificate required',
+      notification_7: 'Your profile is 85% complete. Add more details!',
+      view_all_text: 'View All Notifications'
+    };
+
+    let config = { ...defaultConfig };
+
+    async function onConfigChange(newConfig) {
+      config = { ...config, ...newConfig };
+      
+      const baseSize = config.font_size || defaultConfig.font_size;
+      const customFont = config.font_family || defaultConfig.font_family;
+      const baseFontStack = 'Inter, sans-serif';
+      const headingFontStack = 'Montserrat, sans-serif';
+
+      document.body.style.fontFamily = `${customFont}, ${baseFontStack}`;
+      document.body.style.fontSize = `${baseSize}px`;
+
+      const dropdownTitle = document.getElementById('dropdown-title');
+      if (dropdownTitle) {
+        dropdownTitle.textContent = config.dropdown_title || defaultConfig.dropdown_title;
+        dropdownTitle.style.color = config.text_color || defaultConfig.text_color;
+        dropdownTitle.style.fontFamily = `${customFont}, ${headingFontStack}`;
+        dropdownTitle.style.fontSize = `${baseSize * 1.15}px`;
+      }
+
+      const markReadBtn = document.getElementById('mark-read-btn');
+      if (markReadBtn) {
+        markReadBtn.textContent = config.mark_read_button || defaultConfig.mark_read_button;
+        markReadBtn.style.color = config.primary_action_color || defaultConfig.primary_action_color;
+        markReadBtn.style.fontFamily = `${customFont}, ${baseFontStack}`;
+        markReadBtn.style.fontSize = `${baseSize * 0.85}px`;
+      }
+
+      const notifications = [
+        { id: 'notification-1', key: 'notification_1' },
+        { id: 'notification-2', key: 'notification_2' },
+        { id: 'notification-3', key: 'notification_3' },
+        { id: 'notification-4', key: 'notification_4' },
+        { id: 'notification-5', key: 'notification_5' },
+        { id: 'notification-6', key: 'notification_6' },
+        { id: 'notification-7', key: 'notification_7' }
+      ];
+
+      notifications.forEach(({ id, key }) => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.textContent = config[key] || defaultConfig[key];
+          element.style.color = config.text_color || defaultConfig.text_color;
+          element.style.fontFamily = `${customFont}, ${baseFontStack}`;
+          element.style.fontSize = `${baseSize}px`;
+        }
+      });
+
+      const viewAllLink = document.getElementById('view-all-link');
+      if (viewAllLink) {
+        viewAllLink.textContent = config.view_all_text || defaultConfig.view_all_text;
+        viewAllLink.style.color = config.primary_action_color || defaultConfig.primary_action_color;
+        viewAllLink.style.fontFamily = `${customFont}, ${baseFontStack}`;
+        viewAllLink.style.fontSize = `${baseSize}px`;
+      }
+
+      const dropdown = document.querySelector('.notification-dropdown');
+      if (dropdown) {
+        dropdown.style.backgroundColor = config.background_color || defaultConfig.background_color;
+      }
+    }
+
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [
+          {
+            get: () => config.background_color || defaultConfig.background_color,
+            set: (value) => {
+              config.background_color = value;
+              window.elementSdk.setConfig({ background_color: value });
+            }
+          },
+          {
+            get: () => config.text_color || defaultConfig.text_color,
+            set: (value) => {
+              config.text_color = value;
+              window.elementSdk.setConfig({ text_color: value });
+            }
+          },
+          {
+            get: () => config.primary_action_color || defaultConfig.primary_action_color,
+            set: (value) => {
+              config.primary_action_color = value;
+              window.elementSdk.setConfig({ primary_action_color: value });
+            }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => config.font_family || defaultConfig.font_family,
+          set: (value) => {
+            config.font_family = value;
+            window.elementSdk.setConfig({ font_family: value });
+          }
+        },
+        fontSizeable: {
+          get: () => config.font_size || defaultConfig.font_size,
+          set: (value) => {
+            config.font_size = value;
+            window.elementSdk.setConfig({ font_size: value });
+          }
+        }
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ['dropdown_title', config.dropdown_title || defaultConfig.dropdown_title],
+        ['mark_read_button', config.mark_read_button || defaultConfig.mark_read_button],
+        ['notification_1', config.notification_1 || defaultConfig.notification_1],
+        ['notification_2', config.notification_2 || defaultConfig.notification_2],
+        ['notification_3', config.notification_3 || defaultConfig.notification_3],
+        ['notification_4', config.notification_4 || defaultConfig.notification_4],
+        ['notification_5', config.notification_5 || defaultConfig.notification_5],
+        ['notification_6', config.notification_6 || defaultConfig.notification_6],
+        ['notification_7', config.notification_7 || defaultConfig.notification_7],
+        ['view_all_text', config.view_all_text || defaultConfig.view_all_text]
+      ]);
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+
+    document.getElementById('mark-read-btn').addEventListener('click', (e) => {
+      e.preventDefault();
+      const unreadItems = document.querySelectorAll('.notification-item.unread');
+      unreadItems.forEach(item => {
+        item.classList.remove('unread');
+        const dot = item.querySelector('.unread-dot');
+        if (dot) {
+          dot.style.opacity = '0';
+          setTimeout(() => dot.remove(), 200);
+        }
+      });
+    });
+
+    document.querySelectorAll('.notification-item').forEach(item => {
+      item.addEventListener('click', function() {
+        if (this.classList.contains('unread')) {
+          this.classList.remove('unread');
+          const dot = this.querySelector('.unread-dot');
+          if (dot) {
+            dot.style.opacity = '0';
+            setTimeout(() => dot.remove(), 200);
+          }
+        }
+      });
+    });
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a29ab3351a7b811',t:'MTc2MzgyNzUzMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
