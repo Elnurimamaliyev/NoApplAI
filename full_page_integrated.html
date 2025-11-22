@@ -1981,6 +1981,158 @@
     }
     
     // ==================== TOAST NOTIFICATIONS ====================
-    function show</script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a29f6f4d59db811',t:'MTc2MzgzMDYzNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
-</html>
+    function showToast(message = '', type = 'info', timeout = 4000) {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+      const toast = document.createElement('div');
+      toast.className = 'toast-notification';
+      toast.style.borderLeftColor = type === 'success' ? '#10B981' : type === 'error' ? '#EF4444' : '#5CE1E6';
+      toast.innerHTML = `<div style="display:flex;align-items:center;gap:12px;"><div style="flex:1;font-weight:800;color:#0A2540">${message}</div><button style="background:transparent;border:none;cursor:pointer;font-weight:700;color:#0A2540">✕</button></div>`;
+      const closeBtn = toast.querySelector('button');
+      closeBtn.addEventListener('click', () => {
+        toast.style.animation = 'slideOutRight 0.4s forwards';
+        setTimeout(() => toast.remove(), 400);
+      });
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.animation = 'slideOutRight 0.4s forwards';
+        setTimeout(() => toast.remove(), 400);
+      }, timeout);
+    }
+
+    // ==================== PAGE NAVIGATION ====================
+    function navigateToPage(pageId) {
+      if (!pageId) return;
+      const pages = document.querySelectorAll('.page');
+      pages.forEach(p => p.classList.remove('active'));
+      const target = document.getElementById('page-' + pageId) || document.getElementById('page-' + pageId.toLowerCase()) || document.getElementById('page-' + pageId);
+      if (target) target.classList.add('active');
+      currentPage = pageId;
+      document.querySelectorAll('.nav-link').forEach(a => a.classList.toggle('active', a.dataset.page === pageId));
+      if (pageId === 'programs') renderProgramsGrid();
+      if (pageId === 'upload') renderDocumentsGrid();
+      if (pageId === 'applications') renderApplicationsList();
+    }
+
+    // ==================== RENDER HELPERS ====================
+    function renderProgramsGrid() {
+      const container = document.getElementById('programs-grid');
+      if (!container) return;
+      container.innerHTML = programs.map(p => `
+        <div class="bg-white rounded-2xl p-6 card-hover">
+          <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white font-black" style="background:linear-gradient(90deg,rgba(0,0,0,0.06),rgba(0,0,0,0.06));">${p.logo}</div>
+              <div>
+                <h3 class="font-black text-[#0A2540]">${p.name}</h3>
+                <p class="text-sm text-gray-600">${p.program}</p>
+              </div>
+            </div>
+            <span class="badge badge-success">${p.match}% Match</span>
+          </div>
+          <p class="text-sm text-gray-600 mb-4">${p.location} • ${p.deadline}</p>
+          <div class="flex gap-2"><button onclick="navigateToPage('programs')" class="btn-primary px-4 py-3 rounded-xl font-black text-sm">View</button></div>
+        </div>
+      `).join('');
+    }
+
+    function renderDocumentsGrid() {
+      const container = document.getElementById('documents-grid');
+      if (!container) return;
+      container.innerHTML = documents.map(d => `
+        <div class="document-card ${d.status === 'uploaded' ? 'uploaded' : d.status === 'missing' ? 'missing' : ''}">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="font-black text-[#0A2540]">${d.name}</p>
+              <p class="text-sm text-gray-600">${d.filename || d.required || 'Not provided'}</p>
+            </div>
+            <div class="text-sm font-bold">${d.status === 'uploaded' ? d.size : '<span class=\'status-badge status-missing\'>Missing</span>'}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderApplicationsList() {
+      const container = document.getElementById('applications-list');
+      if (!container) return;
+      container.innerHTML = applications.map(a => `
+        <div class="p-6 bg-[#F8F9FC] rounded-2xl flex items-center justify-between">
+          <div>
+            <p class="font-black text-[#0A2540]">${a.university} — <span class="font-semibold">${a.program}</span></p>
+            <p class="text-xs text-gray-600">Status: ${a.status}${a.daysLeft ? ' • ' + a.daysLeft + 'd left' : ''}</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <button onclick="navigateToPage('applications')" class="btn-primary px-4 py-2 rounded-xl font-black text-sm">Details</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ==================== FILTERS / UI HELPERS ====================
+    function toggleFilter(el) {
+      el.classList.toggle('active');
+      const text = el.textContent.trim();
+      if (activeFilters.includes(text)) activeFilters = activeFilters.filter(f => f !== text);
+      else activeFilters.push(text);
+    }
+
+    function filterPrograms() {
+      const query = document.getElementById('program-search')?.value?.toLowerCase() || '';
+      const country = document.getElementById('country-filter')?.value || '';
+      const degree = document.getElementById('degree-filter')?.value || '';
+      const filtered = programs.filter(p => {
+        if (country && p.location !== country) return false;
+        if (query && !(p.name.toLowerCase().includes(query) || p.program.toLowerCase().includes(query))) return false;
+        return true;
+      });
+      const container = document.getElementById('programs-grid');
+      container.innerHTML = filtered.map(p => `...`).join('');
+      renderProgramsGrid();
+    }
+
+    // ==================== UPLOAD / DRAG & DROP ====================
+    function handleDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('dragover'); }
+    function handleDragLeave(e) { e.currentTarget.classList.remove('dragover'); }
+    function handleDrop(e) {
+      e.preventDefault();
+      e.currentTarget.classList.remove('dragover');
+      const files = Array.from(e.dataTransfer.files || []);
+      files.forEach(f => documents.push({ id: Date.now()+Math.random(), name: f.name, filename: f.name, size: (f.size/1024/1024).toFixed(2) + ' MB', status: 'uploaded' }));
+      renderDocumentsGrid();
+      showToast('Files uploaded', 'success');
+    }
+
+    function handleFileUpload(e) {
+      const files = Array.from(e.target.files || []);
+      files.forEach(f => documents.push({ id: Date.now()+Math.random(), name: f.name, filename: f.name, size: (f.size/1024/1024).toFixed(2) + ' MB', status: 'uploaded' }));
+      renderDocumentsGrid();
+      showToast('Files uploaded', 'success');
+    }
+
+    function saveDocuments() { showToast('Documents saved', 'success'); navigateToPage('dashboard'); }
+
+    function editProfile() { showToast('Edit profile (not implemented)', 'info'); }
+    function uploadPhoto() { showToast('Upload photo (not implemented)', 'info'); }
+    function changePassword() { showToast('Change password (not implemented)', 'info'); }
+    function closeModal(e) { document.getElementById('modal-overlay').classList.remove('show'); }
+    function showDemoModal(){ document.getElementById('modal-overlay').classList.add('show'); document.getElementById('modal-body').innerHTML = '<h3 class="text-2xl font-black">Demo</h3><p class="mt-4">Demo coming soon.</p>'; }
+    function showContactModal(){ document.getElementById('modal-overlay').classList.add('show'); document.getElementById('modal-body').innerHTML = '<h3 class="text-2xl font-black">Contact</h3><p class="mt-4">Contact form coming soon.</p>'; }
+
+    // ==================== INITIALIZATION ====================
+    document.addEventListener('DOMContentLoaded', () => {
+      renderNotifications();
+      updateNotificationBadge();
+      renderProgramsGrid();
+      renderDocumentsGrid();
+      renderApplicationsList();
+      updateNotificationBadge();
+      const uploadZone = document.querySelector('.upload-zone');
+      if (uploadZone) {
+        uploadZone.addEventListener('dragover', handleDragOver);
+        uploadZone.addEventListener('dragleave', handleDragLeave);
+        uploadZone.addEventListener('drop', handleDrop);
+      }
+    });
+  </script>
+ </body>
+ </html>
