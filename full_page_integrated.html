@@ -648,29 +648,19 @@
     /* Nav link */
     .nav-link {
       position: relative;
-      padding-bottom: 6px;
       transition: all 0.3s ease;
+      font-weight: 500;
     }
     
     .nav-link.active {
       color: #0A2540;
       font-weight: 700;
-    }
-    
-    .nav-link.active::after {
-      content: '';
-      position: absolute;
-      bottom: -6px;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, #5CE1E6 0%, #4AC9CE 100%);
-      border-radius: 3px;
-      animation: slideInFromLeft 0.3s ease;
+      background: linear-gradient(135deg, #E6FAFB 0%, #F0FDFD 100%);
     }
     
     .nav-link:hover:not(.active) {
       color: #5CE1E6;
+      background: #F8F9FC;
     }
     
     /* AI badge */
@@ -945,21 +935,39 @@
  <body class="bg-[#F8F9FC]"><!-- Top Navigation -->
   <header class="bg-white sticky top-0 z-50 shadow-sm transition-all duration-300">
    <nav class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <!-- Left side: Logo + Open Programs -->
     <div class="flex items-center space-x-8">
      <div class="flex items-center space-x-3 cursor-pointer group" onclick="navigateToPage('landing')">
       <svg class="w-10 h-10 transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110" viewbox="0 0 40 40" fill="none"><rect width="40" height="40" rx="10" fill="#0A2540" /> <path d="M20 10L28 16V24L20 30L12 24V16L20 10Z" fill="#5CE1E6" /> <circle cx="20" cy="20" r="4" fill="white" />
       </svg><span class="text-2xl font-black text-[#0A2540] transition-all duration-300 group-hover:text-[#5CE1E6]">NoApplAI</span>
      </div>
-     <div class="hidden md:flex items-center space-x-6"><a href="#" class="nav-link text-gray-600 hover:text-[#0A2540] transition font-medium" data-page="dashboard" onclick="navigateToPage('dashboard'); return false;">Dashboard</a> <a href="#" class="nav-link text-gray-600 hover:text-[#0A2540] transition font-medium" data-page="programs" onclick="navigateToPage('programs'); return false;">Programs</a> <a href="#" class="nav-link text-gray-600 hover:text-[#0A2540] transition font-medium" data-page="upload" onclick="navigateToPage('upload'); return false;">Upload</a> <a href="#" class="nav-link text-gray-600 hover:text-[#0A2540] transition font-medium" data-page="applications" onclick="navigateToPage('applications'); return false;">Applications</a> <a href="#" class="nav-link text-gray-600 hover:text-[#0A2540] transition font-medium" data-page="profile" onclick="navigateToPage('profile'); return false;">Profile</a>
+     <div class="hidden md:flex items-center">
+      <a href="#" class="nav-link text-gray-600 hover:text-[#0A2540] transition font-medium px-4 py-2 rounded-lg hover:bg-[#F8F9FC]" data-page="programs" onclick="navigateToPage('programs'); return false;">Open Programs</a>
      </div>
     </div>
-    <div class="flex items-center space-x-4"><button class="relative p-2 hover:bg-[#F8F9FC] rounded-xl transition-all duration-300 group" onclick="toggleNotifications()" id="notification-button">
-      <svg class="w-6 h-6 text-[#0A2540] group-hover:text-[#5CE1E6] transition-colors" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-      </svg><span id="notification-badge" class="notification-badge"></span> </button>
-     <div class="flex items-center space-x-3 pl-3 border-l border-gray-200">
-      <div class="w-11 h-11 bg-gradient-to-br from-[#5CE1E6] to-[#4AC9CE] rounded-full flex items-center justify-center text-[#0A2540] font-black text-lg cursor-pointer shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 glow-on-hover" onclick="navigateToPage('profile')">
-       Q
+    
+    <!-- Right side: Dashboard, Upload, Applications, Profile -->
+    <div class="flex items-center space-x-1">
+     <!-- Navigation links (always visible) -->
+     <div class="hidden md:flex items-center space-x-1">
+      <a href="#" class="nav-link text-gray-600 hover:text-[#0A2540] transition font-medium px-4 py-2 rounded-lg hover:bg-[#F8F9FC]" data-page="dashboard" onclick="navigateToPage('dashboard'); return false;">Dashboard</a>
+      <a href="#" class="nav-link text-gray-600 hover:text-[#0A2540] transition font-medium px-4 py-2 rounded-lg hover:bg-[#F8F9FC]" data-page="upload" onclick="navigateToPage('upload'); return false;">Upload</a>
+      <a href="#" class="nav-link text-gray-600 hover:text-[#0A2540] transition font-medium px-4 py-2 rounded-lg hover:bg-[#F8F9FC]" data-page="applications" onclick="navigateToPage('applications'); return false;">Applications</a>
+      <a href="#" class="nav-link text-gray-600 hover:text-[#0A2540] transition font-medium px-4 py-2 rounded-lg hover:bg-[#F8F9FC]" data-page="profile" onclick="navigateToPage('profile'); return false;">Profile</a>
+     </div>
+     
+     <!-- Show when logged in: Divider + notifications + avatar + logout -->
+     <div id="user-menu" class="hidden md:flex items-center space-x-2">
+      <!-- Divider -->
+      <div class="h-8 w-px bg-gray-200 mx-2"></div>
+      
+      <button class="relative p-2 hover:bg-[#F8F9FC] rounded-xl transition-all duration-300 group" onclick="toggleNotifications()" id="notification-button">
+       <svg class="w-6 h-6 text-[#0A2540] group-hover:text-[#5CE1E6] transition-colors" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+       </svg><span id="notification-badge" class="notification-badge"></span>
+      </button>
+      <div class="w-10 h-10 bg-gradient-to-br from-[#5CE1E6] to-[#4AC9CE] rounded-full flex items-center justify-center text-[#0A2540] font-black text-lg cursor-pointer shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 glow-on-hover" onclick="navigateToPage('profile')" id="user-avatar">
       </div>
+      <button onclick="logout()" class="text-sm font-bold text-gray-600 hover:text-[#0A2540] transition px-3 py-2 rounded-lg hover:bg-[#F8F9FC]">Logout</button>
      </div>
     </div>
    </nav>
@@ -984,7 +992,147 @@
     <div id="modal-body"><!-- Modal content will be populated by JavaScript -->
     </div>
    </div>
-  </div><!-- Page 1: Landing -->
+  </div><!-- Page: Login -->
+  <div id="page-login" class="page">
+   <div class="min-h-screen bg-gradient-to-br from-[#F8F9FC] to-white flex items-center justify-center px-6 py-12">
+    <div class="w-full max-w-md">
+     <!-- Logo and Title -->
+     <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#5CE1E6] to-[#4AC9CE] rounded-2xl mb-4 shadow-lg">
+       <span class="text-2xl font-black text-white">N</span>
+      </div>
+      <h1 class="text-3xl font-black text-[#0A2540] mb-2">Welcome Back</h1>
+      <p class="text-gray-600">Log in to continue your application journey</p>
+     </div>
+     
+     <!-- Login Form -->
+     <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+      <form id="login-form" onsubmit="handleLogin(event)">
+       <!-- Email -->
+       <div class="mb-6">
+        <label class="block text-sm font-bold text-[#0A2540] mb-2" for="login-email">Email Address</label>
+        <input type="email" id="login-email" name="email" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#5CE1E6] focus:ring-2 focus:ring-[#5CE1E6] focus:ring-opacity-20 outline-none transition" placeholder="you@example.com">
+       </div>
+       
+       <!-- Password -->
+       <div class="mb-6">
+        <label class="block text-sm font-bold text-[#0A2540] mb-2" for="login-password">Password</label>
+        <input type="password" id="login-password" name="password" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#5CE1E6] focus:ring-2 focus:ring-[#5CE1E6] focus:ring-opacity-20 outline-none transition" placeholder="Enter your password">
+       </div>
+       
+       <!-- Remember & Forgot -->
+       <div class="flex items-center justify-between mb-6">
+        <label class="flex items-center">
+         <input type="checkbox" class="w-4 h-4 text-[#5CE1E6] border-gray-300 rounded focus:ring-[#5CE1E6]">
+         <span class="ml-2 text-sm text-gray-600">Remember me</span>
+        </label>
+        <a href="#" class="text-sm font-bold text-[#5CE1E6] hover:text-[#4AC9CE] transition">Forgot password?</a>
+       </div>
+       
+       <!-- Submit Button -->
+       <button type="submit" class="w-full bg-gradient-to-r from-[#5CE1E6] to-[#4AC9CE] text-white font-bold py-3 rounded-xl hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300">
+        Log In
+       </button>
+      </form>
+      
+      <!-- Sign Up Link -->
+      <div class="mt-6 text-center">
+       <p class="text-gray-600 text-sm">
+        Don't have an account? 
+        <a href="#" onclick="navigateToPage('register'); return false;" class="font-bold text-[#5CE1E6] hover:text-[#4AC9CE] transition">Sign Up</a>
+       </p>
+      </div>
+     </div>
+     
+     <!-- Back to Home -->
+     <div class="text-center mt-6">
+      <a href="#" onclick="navigateToPage('landing'); return false;" class="text-sm text-gray-600 hover:text-[#5CE1E6] transition">← Back to Home</a>
+     </div>
+    </div>
+   </div>
+  </div>
+  
+  <!-- Page: Register -->
+  <div id="page-register" class="page">
+   <div class="min-h-screen bg-gradient-to-br from-[#F8F9FC] to-white flex items-center justify-center px-6 py-12">
+    <div class="w-full max-w-md">
+     <!-- Logo and Title -->
+     <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-[#5CE1E6] to-[#4AC9CE] rounded-2xl mb-4 shadow-lg">
+       <span class="text-2xl font-black text-white">N</span>
+      </div>
+      <h1 class="text-3xl font-black text-[#0A2540] mb-2">Create Account</h1>
+      <p class="text-gray-600">Start your application journey today</p>
+     </div>
+     
+     <!-- Register Form -->
+     <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+      <form id="register-form" onsubmit="handleRegister(event)">
+       <!-- Full Name -->
+       <div class="mb-4">
+        <label class="block text-sm font-bold text-[#0A2540] mb-2" for="register-name">Full Name</label>
+        <input type="text" id="register-name" name="full_name" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#5CE1E6] focus:ring-2 focus:ring-[#5CE1E6] focus:ring-opacity-20 outline-none transition" placeholder="John Doe">
+       </div>
+       
+       <!-- Email -->
+       <div class="mb-4">
+        <label class="block text-sm font-bold text-[#0A2540] mb-2" for="register-email">Email Address</label>
+        <input type="email" id="register-email" name="email" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#5CE1E6] focus:ring-2 focus:ring-[#5CE1E6] focus:ring-opacity-20 outline-none transition" placeholder="you@example.com">
+       </div>
+       
+       <!-- Password -->
+       <div class="mb-4">
+        <label class="block text-sm font-bold text-[#0A2540] mb-2" for="register-password">Password</label>
+        <input type="password" id="register-password" name="password" required minlength="8" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#5CE1E6] focus:ring-2 focus:ring-[#5CE1E6] focus:ring-opacity-20 outline-none transition" placeholder="At least 8 characters">
+       </div>
+       
+       <!-- Confirm Password -->
+       <div class="mb-4">
+        <label class="block text-sm font-bold text-[#0A2540] mb-2" for="register-confirm-password">Confirm Password</label>
+        <input type="password" id="register-confirm-password" name="confirm_password" required minlength="8" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#5CE1E6] focus:ring-2 focus:ring-[#5CE1E6] focus:ring-opacity-20 outline-none transition" placeholder="Re-enter your password">
+       </div>
+       
+       <!-- Role Selection -->
+       <div class="mb-6">
+        <label class="block text-sm font-bold text-[#0A2540] mb-2" for="register-role">I am a...</label>
+        <select id="register-role" name="role" required class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#5CE1E6] focus:ring-2 focus:ring-[#5CE1E6] focus:ring-opacity-20 outline-none transition">
+         <option value="student">Student</option>
+         <option value="professional">Professional</option>
+        </select>
+       </div>
+       
+       <!-- Terms -->
+       <div class="mb-6">
+        <label class="flex items-start">
+         <input type="checkbox" required class="w-4 h-4 text-[#5CE1E6] border-gray-300 rounded focus:ring-[#5CE1E6] mt-1">
+         <span class="ml-2 text-sm text-gray-600">I agree to the <a href="#" class="text-[#5CE1E6] hover:text-[#4AC9CE]">Terms of Service</a> and <a href="#" class="text-[#5CE1E6] hover:text-[#4AC9CE]">Privacy Policy</a></span>
+        </label>
+       </div>
+       
+       <!-- Submit Button -->
+       <button type="submit" class="w-full bg-gradient-to-r from-[#5CE1E6] to-[#4AC9CE] text-white font-bold py-3 rounded-xl hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300">
+        Create Account
+       </button>
+      </form>
+      
+      <!-- Log In Link -->
+      <div class="mt-6 text-center">
+       <p class="text-gray-600 text-sm">
+        Already have an account? 
+        <a href="#" onclick="navigateToPage('login'); return false;" class="font-bold text-[#5CE1E6] hover:text-[#4AC9CE] transition">Log In</a>
+       </p>
+      </div>
+     </div>
+     
+     <!-- Back to Home -->
+     <div class="text-center mt-6">
+      <a href="#" onclick="navigateToPage('landing'); return false;" class="text-sm text-gray-600 hover:text-[#5CE1E6] transition">← Back to Home</a>
+     </div>
+    </div>
+   </div>
+  </div>
+  
+  <!-- Page 1: Landing -->
   <div id="page-landing" class="page active"><!-- Hero Section -->
    <section class="gradient-hero py-24 px-6 relative">
     <div class="max-w-6xl mx-auto text-center relative z-10">
@@ -1176,7 +1324,7 @@
   <div id="page-dashboard" class="page">
    <section class="max-w-7xl mx-auto px-6 py-10">
     <div class="mb-10 animate-slide-in-bottom">
-     <h1 id="welcome-message" class="text-5xl font-black text-[#0A2540] mb-3">Welcome back, Qurbanali!</h1>
+     <h1 id="welcome-message" class="text-5xl font-black text-[#0A2540] mb-3">Welcome to NoApplAI!</h1>
      <p id="dashboard-subtitle" class="text-xl text-gray-600">Here's your application progress and AI-powered recommendations.</p>
     </div><!-- Progress Cards -->
     <div class="grid md:grid-cols-4 gap-6 mb-10">
@@ -1379,7 +1527,7 @@
           </svg>
          </div>
          <div>
-          <p class="font-black text-[#0A2540] text-sm">Browse Programs</p>
+          <p class="font-black text-[#0A2540] text-sm">Browse Open Programs</p>
           <p class="text-xs text-[#0A2540]/70 font-semibold">Discover new universities</p>
          </div>
         </div></button> <button onclick="navigateToPage('upload')" class="w-full bg-[#F8F9FC] rounded-2xl p-5 hover:bg-gray-200 transition-all duration-300 text-left card-hover">
@@ -1436,8 +1584,8 @@
   <div id="page-programs" class="page">
    <section class="max-w-7xl mx-auto px-6 py-10">
     <div class="mb-10 animate-slide-in-bottom">
-     <h1 id="programs-title" class="text-5xl font-black text-[#0A2540] mb-3">Discover Programs</h1>
-     <p id="programs-subtitle" class="text-xl text-gray-600">Search and explore university programs matched to your profile</p>
+     <h1 id="programs-title" class="text-5xl font-black text-[#0A2540] mb-3">Open Programs</h1>
+     <p id="programs-subtitle" class="text-xl text-gray-600">Search and explore university programs from around the world</p>
     </div><!-- Search & Filters -->
     <div class="bg-white rounded-3xl p-8 shadow-lg mb-10 animate-scale-in">
      <div class="flex flex-col gap-5">
@@ -1455,13 +1603,13 @@
     </div><!-- Programs Grid -->
     <div id="programs-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-10"><!-- Programs will be rendered by JavaScript -->
     </div><!-- AI Tip -->
-    <div class="bg-gradient-to-r from-cyan-50 via-blue-50 to-cyan-50 rounded-3xl p-8 border-2 border-[#5CE1E6] animate-slide-in-bottom">
+    <div id="programs-ai-tip" class="bg-gradient-to-r from-cyan-50 via-blue-50 to-cyan-50 rounded-3xl p-8 border-2 border-[#5CE1E6] animate-slide-in-bottom">
      <div class="flex items-start space-x-4">
       <svg class="w-8 h-8 text-[#5CE1E6] flex-shrink-0" fill="currentColor" viewbox="0 0 20 20"><path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3z" />
       </svg>
       <div>
        <p class="font-black text-[#0A2540] mb-2 text-lg">💡 AI Recommendation</p>
-       <p class="text-sm text-gray-700 font-semibold leading-relaxed">Based on your profile, programs with 85%+ match rate have the highest acceptance probability. Consider applying to at least 3 high-match programs and 2 reach schools for the best strategy.</p>
+       <p id="programs-ai-text" class="text-sm text-gray-700 font-semibold leading-relaxed">Create an account to get personalized program recommendations based on your academic profile and preferences.</p>
       </div>
      </div>
     </div>
@@ -1624,27 +1772,27 @@
        </div>
        <div class="flex flex-col md:flex-row items-start md:items-center gap-8">
         <div class="relative group">
-         <div class="w-36 h-36 bg-gradient-to-br from-[#5CE1E6] to-[#4AC9CE] rounded-full flex items-center justify-center text-white text-6xl font-black shadow-2xl">
-          Q
+         <div id="profile-avatar-large" class="w-36 h-36 bg-gradient-to-br from-[#5CE1E6] to-[#4AC9CE] rounded-full flex items-center justify-center text-white text-6xl font-black shadow-2xl">
+          ?
          </div><button onclick="uploadPhoto()" class="absolute bottom-0 right-0 w-12 h-12 bg-[#0A2540] rounded-full flex items-center justify-center hover:bg-[#0d3054] transition-all duration-300 shadow-xl group-hover:scale-110">
           <svg class="w-6 h-6 text-white" fill="currentColor" viewbox="0 0 20 20"><path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" />
           </svg></button>
         </div>
         <div class="flex-1">
-         <h3 class="text-3xl font-black text-[#0A2540] mb-3">Qurbanali Feyzullayev</h3>
-         <p class="text-xl text-gray-600 mb-6 font-semibold">BSc Biology • 3.8 GPA</p>
+         <h3 id="profile-name" class="text-3xl font-black text-[#0A2540] mb-3">Your Name</h3>
+         <p id="profile-degree" class="text-xl text-gray-600 mb-6 font-semibold">Your degree and GPA</p>
          <div class="space-y-3">
           <div class="flex items-center space-x-3 text-gray-600 font-semibold">
            <svg class="w-5 h-5" fill="currentColor" viewbox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-           </svg><span>qurbanali.f@example.com</span>
+           </svg><span id="profile-email">your.email@example.com</span>
           </div>
           <div class="flex items-center space-x-3 text-gray-600 font-semibold">
            <svg class="w-5 h-5" fill="currentColor" viewbox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
-           </svg><span>+1 (555) 123-4567</span>
+           </svg><span id="profile-phone">Add phone number</span>
           </div>
           <div class="flex items-center space-x-3 text-gray-600 font-semibold">
            <svg class="w-5 h-5" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
-           </svg><span>San Francisco, California</span>
+           </svg><span id="profile-location">Add location</span>
           </div>
          </div>
         </div>
@@ -1870,9 +2018,9 @@
     ];
     
     const documents = [
-      { id: 1, name: 'CV / Resume', filename: 'CV_Qurbanali.pdf', size: '2.4 MB', status: 'uploaded' },
-      { id: 2, name: 'Academic Transcript', filename: 'Transcript_2023.pdf', size: '1.8 MB', status: 'uploaded' },
-      { id: 3, name: 'Passport / ID', filename: 'Passport.jpg', size: '1.2 MB', status: 'uploaded' },
+      { id: 1, name: 'CV / Resume', filename: '', size: '', status: 'missing', required: 'Upload your CV' },
+      { id: 2, name: 'Academic Transcript', filename: '', size: '', status: 'missing', required: 'Upload transcript' },
+      { id: 3, name: 'Passport / ID', filename: '', size: '', status: 'missing', required: 'Upload ID document' },
       { id: 4, name: 'English Test Certificate', filename: '', size: '', status: 'missing', required: 'TOEFL / IELTS' }
     ];
     
@@ -2002,23 +2150,142 @@
     }
 
     // ==================== PAGE NAVIGATION ====================
+    
+    // Store intended destination for post-login redirect
+    let intendedDestination = null;
+    let intendedAction = null;
+    
     function navigateToPage(pageId) {
       if (!pageId) return;
+      
+      // Protected pages that require authentication (Open Programs is PUBLIC)
+      const protectedPages = ['dashboard', 'upload', 'applications', 'profile'];
+      const isProtected = protectedPages.includes(pageId);
+      const token = getToken();
+      
+      // Redirect to login if trying to access protected page without auth
+      if (isProtected && !token) {
+        // Show different message for Profile vs other pages
+        if (pageId === 'profile') {
+          showToast('Please log in to view your profile', 'info');
+        } else {
+          showToast('Please log in to access this page', 'error');
+        }
+        intendedDestination = pageId; // Store where they wanted to go
+        pageId = 'login';
+      }
+      
       const pages = document.querySelectorAll('.page');
       pages.forEach(p => p.classList.remove('active'));
       const target = document.getElementById('page-' + pageId) || document.getElementById('page-' + pageId.toLowerCase()) || document.getElementById('page-' + pageId);
       if (target) target.classList.add('active');
       currentPage = pageId;
       document.querySelectorAll('.nav-link').forEach(a => a.classList.toggle('active', a.dataset.page === pageId));
-      if (pageId === 'programs') renderProgramsGrid();
+      
+      // Load user data when navigating to authenticated areas
+      if (token) {
+        loadUserData();
+      }
+      
+      // Render page-specific content and update messaging
+      if (pageId === 'programs') {
+        renderProgramsGrid();
+        updateProgramsPageUI();
+      }
       if (pageId === 'upload') renderDocumentsGrid();
       if (pageId === 'applications') renderApplicationsList();
+    }
+    
+    // Update Open Programs page UI based on authentication status
+    function updateProgramsPageUI() {
+      const subtitle = document.getElementById('programs-subtitle');
+      const aiText = document.getElementById('programs-ai-text');
+      const token = getToken();
+      
+      if (subtitle) {
+        if (token) {
+          subtitle.textContent = 'Search and explore university programs matched to your profile';
+        } else {
+          subtitle.innerHTML = 'Search and explore university programs from around the world. <a href="#" onclick="navigateToPage(\'login\'); return false;" class="text-[#5CE1E6] hover:text-[#4AC9CE] font-black">Log in</a> to see personalized matches.';
+        }
+      }
+      
+      if (aiText) {
+        if (token) {
+          aiText.textContent = 'Based on your profile, programs with 85%+ match rate have the highest acceptance probability. Consider applying to at least 3 high-match programs and 2 reach schools for the best strategy.';
+        } else {
+          aiText.innerHTML = '<a href="#" onclick="navigateToPage(\'register\'); return false;" class="text-[#5CE1E6] hover:text-[#4AC9CE] font-black">Create an account</a> to get personalized program recommendations based on your academic profile and preferences.';
+        }
+      }
+    }
+    
+    // Check if user is authenticated before performing action
+    function requireAuth(action, actionData = null) {
+      const token = getToken();
+      
+      if (!token) {
+        // Store the action they wanted to perform
+        intendedAction = { action, data: actionData };
+        showToast('Please log in to continue', 'info');
+        navigateToPage('login');
+        return false;
+      }
+      
+      return true;
+    }
+    
+    // Execute intended action after login
+    function executeIntendedAction() {
+      // Note: intendedDestination is now handled in handleLogin directly
+      // This function only handles actions (like saveProgram, startApplication)
+      
+      if (intendedAction) {
+        const { action, data } = intendedAction;
+        intendedAction = null;
+        
+        // Execute the stored action
+        if (action === 'saveProgram') {
+          saveProgram(data);
+        } else if (action === 'startApplication') {
+          startApplication(data);
+        } else if (action === 'viewProgramDetails') {
+          viewProgramDetails(data);
+        }
+      }
+    }
+
+    // ==================== PROGRAM ACTIONS ====================
+    function saveProgram(programId) {
+      if (!requireAuth('saveProgram', programId)) return;
+      
+      // Implement save program logic
+      showToast('Program saved to your list', 'success');
+      console.log('Saving program:', programId);
+    }
+    
+    function startApplication(programId) {
+      if (!requireAuth('startApplication', programId)) return;
+      
+      // Implement start application logic
+      showToast('Starting application...', 'info');
+      navigateToPage('applications');
+      console.log('Starting application for program:', programId);
+    }
+    
+    function viewProgramDetails(programId) {
+      // Viewing details is public, but show personalized info if logged in
+      const token = getToken();
+      showToast('Viewing program details', 'info');
+      console.log('Viewing program:', programId, 'Authenticated:', !!token);
+      // Could open a modal or navigate to detailed view
     }
 
     // ==================== RENDER HELPERS ====================
     function renderProgramsGrid() {
       const container = document.getElementById('programs-grid');
       if (!container) return;
+      const isAuthenticated = !!getToken();
+      
       container.innerHTML = programs.map(p => `
         <div class="bg-white rounded-2xl p-6 card-hover">
           <div class="flex items-center justify-between mb-4">
@@ -2032,7 +2299,15 @@
             <span class="badge badge-success">${p.match}% Match</span>
           </div>
           <p class="text-sm text-gray-600 mb-4">${p.location} • ${p.deadline}</p>
-          <div class="flex gap-2"><button onclick="navigateToPage('programs')" class="btn-primary px-4 py-3 rounded-xl font-black text-sm">View</button></div>
+          <div class="flex gap-2">
+            <button onclick="viewProgramDetails(${p.id})" class="btn-primary px-4 py-3 rounded-xl font-black text-sm flex-1">View Details</button>
+            <button onclick="saveProgram(${p.id})" class="btn-secondary px-4 py-3 rounded-xl font-black text-sm" title="${isAuthenticated ? 'Save Program' : 'Login to save'}">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
+              </svg>
+            </button>
+            <button onclick="startApplication(${p.id})" class="bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-3 rounded-xl font-black text-sm hover:shadow-lg transition" title="${isAuthenticated ? 'Start Application' : 'Login to apply'}">Apply</button>
+          </div>
         </div>
       `).join('');
     }
@@ -2119,8 +2394,329 @@
     function showDemoModal(){ document.getElementById('modal-overlay').classList.add('show'); document.getElementById('modal-body').innerHTML = '<h3 class="text-2xl font-black">Demo</h3><p class="mt-4">Demo coming soon.</p>'; }
     function showContactModal(){ document.getElementById('modal-overlay').classList.add('show'); document.getElementById('modal-body').innerHTML = '<h3 class="text-2xl font-black">Contact</h3><p class="mt-4">Contact form coming soon.</p>'; }
 
+    // ==================== AUTHENTICATION ====================
+    const API_BASE_URL = 'http://localhost:8000/api/v1';
+    
+    // Token management
+    function saveToken(accessToken, refreshToken) {
+      localStorage.setItem('access_token', accessToken);
+      localStorage.setItem('refresh_token', refreshToken);
+    }
+    
+    function getToken() {
+      return localStorage.getItem('access_token');
+    }
+    
+    function clearTokens() {
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('user_data');
+    }
+    
+    // Check authentication status
+    function checkAuth() {
+      const token = getToken();
+      const userMenu = document.getElementById('user-menu');
+      
+      if (token) {
+        // User is logged in - show user menu (notifications, avatar, logout)
+        if (userMenu) userMenu.classList.remove('hidden');
+        
+        // Update UI with user data
+        loadUserData();
+      } else {
+        // User is logged out - hide user menu
+        if (userMenu) userMenu.classList.add('hidden');
+        
+        // Clear any displayed user data
+        clearUserDataFromUI();
+      }
+    }
+    
+    // Load user data and update UI
+    function loadUserData() {
+      const userData = JSON.parse(localStorage.getItem('user_data') || '{}');
+      
+      if (!userData.full_name) return;
+      
+      const firstInitial = userData.full_name.charAt(0).toUpperCase();
+      const firstName = userData.full_name.split(' ')[0];
+      
+      // Update avatar in navigation
+      const userAvatar = document.getElementById('user-avatar');
+      if (userAvatar) {
+        userAvatar.textContent = firstInitial;
+      }
+      
+      // Update welcome message on dashboard
+      const welcomeMessage = document.getElementById('welcome-message');
+      if (welcomeMessage) {
+        welcomeMessage.textContent = `Welcome back, ${firstName}!`;
+      }
+      
+      // Update profile page elements
+      const profileName = document.getElementById('profile-name');
+      if (profileName) {
+        profileName.textContent = userData.full_name;
+      }
+      
+      const profileEmail = document.getElementById('profile-email');
+      if (profileEmail) {
+        profileEmail.textContent = userData.email;
+      }
+      
+      // Update large profile avatar
+      const profileAvatarLarge = document.getElementById('profile-avatar-large');
+      if (profileAvatarLarge) {
+        profileAvatarLarge.textContent = firstInitial;
+      }
+      
+      // Update profile degree info if available
+      const profileDegree = document.getElementById('profile-degree');
+      if (profileDegree && userData.current_degree && userData.gpa) {
+        profileDegree.textContent = `${userData.current_degree} • ${userData.gpa} GPA`;
+      } else if (profileDegree && userData.current_degree) {
+        profileDegree.textContent = userData.current_degree;
+      }
+      
+      // Update phone if available
+      const profilePhone = document.getElementById('profile-phone');
+      if (profilePhone && userData.phone) {
+        profilePhone.textContent = userData.phone;
+      }
+      
+      // Update location if available
+      const profileLocation = document.getElementById('profile-location');
+      if (profileLocation && userData.location) {
+        profileLocation.textContent = userData.location;
+      }
+      
+      // Update profile completion if available
+      if (userData.profile_completion) {
+        const completionElements = document.querySelectorAll('#profile-completion');
+        completionElements.forEach(el => {
+          el.textContent = userData.profile_completion + '%';
+        });
+      }
+    }
+    
+    // Clear user data from UI
+    function clearUserDataFromUI() {
+      // Reset welcome message
+      const welcomeMessage = document.getElementById('welcome-message');
+      if (welcomeMessage) {
+        welcomeMessage.textContent = 'Welcome to NoApplAI!';
+      }
+      
+      // Reset avatar
+      const userAvatar = document.getElementById('user-avatar');
+      if (userAvatar) {
+        userAvatar.textContent = '';
+      }
+      
+      // Clear profile page data
+      const profileName = document.getElementById('profile-name');
+      if (profileName) {
+        profileName.textContent = 'Your Name';
+      }
+      
+      const profileEmail = document.getElementById('profile-email');
+      if (profileEmail) {
+        profileEmail.textContent = 'your.email@example.com';
+      }
+      
+      const profileAvatarLarge = document.getElementById('profile-avatar-large');
+      if (profileAvatarLarge) {
+        profileAvatarLarge.textContent = '?';
+      }
+      
+      const profileDegree = document.getElementById('profile-degree');
+      if (profileDegree) {
+        profileDegree.textContent = 'Your degree and GPA';
+      }
+      
+      const profilePhone = document.getElementById('profile-phone');
+      if (profilePhone) {
+        profilePhone.textContent = 'Add phone number';
+      }
+      
+      const profileLocation = document.getElementById('profile-location');
+      if (profileLocation) {
+        profileLocation.textContent = 'Add location';
+      }
+    }
+    
+    // Handle login
+    async function handleLogin(event) {
+      event.preventDefault();
+      const form = event.target;
+      const email = form.email.value;
+      const password = form.password.value;
+      
+      try {
+        const formData = new URLSearchParams();
+        formData.append('username', email);
+        formData.append('password', password);
+        
+        const response = await fetch(`${API_BASE_URL}/auth/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: formData
+        });
+        
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.detail || 'Login failed');
+        }
+        
+        const data = await response.json();
+        saveToken(data.access_token, data.refresh_token);
+        
+        // Fetch user data
+        const userResponse = await fetch(`${API_BASE_URL}/auth/me`, {
+          headers: {
+            'Authorization': `Bearer ${data.access_token}`
+          }
+        });
+        
+        if (userResponse.ok) {
+          const userData = await userResponse.json();
+          localStorage.setItem('user_data', JSON.stringify(userData));
+        }
+        
+        showToast('Login successful! Welcome back.', 'success');
+        checkAuth();
+        
+        // Check if there's an intended destination or action
+        if (intendedDestination) {
+          const destination = intendedDestination;
+          intendedDestination = null;
+          navigateToPage(destination);
+        } else if (intendedAction) {
+          executeIntendedAction();
+        } else {
+          // Default redirect to profile after successful login
+          navigateToPage('profile');
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        // Better error message for network errors
+        if (error.message === 'Failed to fetch') {
+          showToast('Cannot connect to server. Please check if the backend is running.', 'error');
+        } else {
+          showToast(error.message || 'Login failed. Please check your credentials.', 'error');
+        }
+      }
+    }
+    
+    // Handle registration
+    async function handleRegister(event) {
+      event.preventDefault();
+      const form = event.target;
+      const full_name = form.full_name.value;
+      const email = form.email.value;
+      const password = form.password.value;
+      const confirm_password = form.confirm_password.value;
+      const role = form.role.value;
+      
+      // Validate passwords match
+      if (password !== confirm_password) {
+        showToast('Passwords do not match', 'error');
+        return;
+      }
+      
+      try {
+        const response = await fetch(`${API_BASE_URL}/auth/register`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email,
+            password,
+            full_name,
+            role
+          })
+        });
+        
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.detail || 'Registration failed');
+        }
+        
+        const data = await response.json();
+        showToast('Account created successfully! Please log in.', 'success');
+        navigateToPage('login');
+      } catch (error) {
+        console.error('Registration error:', error);
+        // Better error message for network errors
+        if (error.message === 'Failed to fetch') {
+          showToast('Cannot connect to server. Please check if the backend is running.', 'error');
+        } else {
+          showToast(error.message || 'Registration failed. Please try again.', 'error');
+        }
+      }
+    }
+    
+    // Handle logout
+    async function logout() {
+      const token = getToken();
+      
+      if (token) {
+        try {
+          await fetch(`${API_BASE_URL}/auth/logout`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+        } catch (error) {
+          console.error('Logout error:', error);
+        }
+      }
+      
+      clearTokens();
+      checkAuth();
+      showToast('Logged out successfully', 'success');
+      navigateToPage('landing');
+    }
+    
+    // Fetch API with authentication
+    async function fetchWithAuth(url, options = {}) {
+      const token = getToken();
+      
+      if (token) {
+        options.headers = {
+          ...options.headers,
+          'Authorization': `Bearer ${token}`
+        };
+      }
+      
+      const response = await fetch(url, options);
+      
+      // Handle 401 Unauthorized
+      if (response.status === 401) {
+        showToast('Session expired. Please log in again.', 'error');
+        logout();
+        throw new Error('Unauthorized');
+      }
+      
+      return response;
+    }
+
     // ==================== INITIALIZATION ====================
     document.addEventListener('DOMContentLoaded', () => {
+      // Check authentication status on load
+      checkAuth();
+      
+      // If user is logged in, show their data
+      const token = getToken();
+      if (token) {
+        loadUserData();
+      }
+      
       renderNotifications();
       updateNotificationBadge();
       renderProgramsGrid();

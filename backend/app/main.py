@@ -75,11 +75,19 @@ async def add_process_time_header(request: Request, call_next):
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
     """Handle validation errors"""
+    errors = exc.errors()
+    # Format error messages to be more user-friendly
+    error_messages = []
+    for error in errors:
+        field = " -> ".join(str(x) for x in error["loc"])
+        message = error["msg"]
+        error_messages.append(f"{field}: {message}")
+    
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
         content={
-            "detail": exc.errors(),
-            "body": exc.body
+            "detail": "; ".join(error_messages) if error_messages else "Validation error",
+            "errors": errors
         },
     )
 
