@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Documents - NoApplAI</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h1>NoApplAI</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="upload.html" class="nav-link active">Upload Documents</a></li>
+                <li><a href="recommendations.html" class="nav-link">Recommendations</a></li>
+                <li><a href="tracking.html" class="nav-link">Track Applications</a></li>
+                <li><a href="index.html" id="logoutBtn" class="nav-link">Logout</a></li>
+            </ul>
+            <div class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h2>Upload Documents</h2>
+                <p>Upload your academic and professional documents</p>
+            </div>
+
+            <div class="upload-section">
+                <div class="upload-box">
+                    <div class="upload-icon">📤</div>
+                    <h3>Select Document Type</h3>
+                    <select id="documentType" class="form-control">
+                        <option value="cv">CV / Resume</option>
+                        <option value="transcript">Academic Transcript</option>
+                        <option value="certificate">Certificate</option>
+                        <option value="motivation_letter">Motivation Letter</option>
+                        <option value="recommendation_letter">Recommendation Letter</option>
+                    </select>
+                    
+                    <div class="file-input-wrapper">
+                        <input type="file" id="fileInput" class="file-input" accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png">
+                        <label for="fileInput" class="btn btn-primary">Choose File</label>
+                        <span id="fileName" class="file-name">No file chosen</span>
+                    </div>
+                    
+                    <button id="uploadBtn" class="btn btn-success" disabled>Upload Document</button>
+                </div>
+            </div>
+
+            <div class="documents-section">
+                <h3>Your Documents</h3>
+                <div id="documentsList" class="documents-list">
+                    <p class="no-documents">No documents uploaded yet</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 NoApplAI. Automated University Application Portal.</p>
+        </div>
+    </footer>
+
+    <script type="module" src="js/upload.js"></script>
+</body>
+</html>

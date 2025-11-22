@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NoApplAI - Automated University Application Portal</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h1>NoApplAI</h1>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html" class="nav-link active">Home</a></li>
+                <li><a href="upload.html" class="nav-link">Upload Documents</a></li>
+                <li><a href="recommendations.html" class="nav-link">Recommendations</a></li>
+                <li><a href="tracking.html" class="nav-link">Track Applications</a></li>
+                <li><a href="#" id="logoutBtn" class="nav-link" style="display:none;">Logout</a></li>
+            </ul>
+            <div class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <!-- Auth Section -->
+        <section id="authSection" class="auth-section">
+            <div class="container">
+                <div class="auth-box">
+                    <h2 id="authTitle">Welcome to NoApplAI</h2>
+                    <p class="auth-subtitle">Your automated university application assistant</p>
+                    
+                    <form id="authForm" class="auth-form">
+                        <div class="form-group">
+                            <label for="authName" id="nameLabel" style="display:none;">Full Name</label>
+                            <input type="text" id="authName" placeholder="Full Name" style="display:none;" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="authEmail">Email</label>
+                            <input type="email" id="authEmail" placeholder="Enter your email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="authPassword">Password</label>
+                            <input type="password" id="authPassword" placeholder="Enter your password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="authSubmitBtn">Sign In</button>
+                        <p class="auth-toggle">
+                            <span id="authToggleText">Don't have an account?</span>
+                            <a href="#" id="authToggleLink">Sign Up</a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Section -->
+        <section id="dashboardSection" class="dashboard-section" style="display:none;">
+            <div class="container">
+                <div class="dashboard-header">
+                    <h2>Dashboard</h2>
+                    <p>Welcome back, <span id="userName"></span>!</p>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <div class="card-icon">📄</div>
+                        <h3>Documents</h3>
+                        <p class="card-value" id="docCount">0</p>
+                        <p class="card-label">Uploaded</p>
+                        <a href="upload.html" class="card-link">Upload More →</a>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="card-icon">🎓</div>
+                        <h3>Recommendations</h3>
+                        <p class="card-value" id="recoCount">0</p>
+                        <p class="card-label">Programs Available</p>
+                        <a href="recommendations.html" class="card-link">View Programs →</a>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="card-icon">📋</div>
+                        <h3>Applications</h3>
+                        <p class="card-value" id="appCount">0</p>
+                        <p class="card-label">In Progress</p>
+                        <a href="tracking.html" class="card-link">Track Status →</a>
+                    </div>
+                </div>
+
+                <div class="quick-start">
+                    <h3>Quick Start Guide</h3>
+                    <div class="steps">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <h4>Upload Documents</h4>
+                            <p>Upload your CV, transcripts, and certificates</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <h4>Get Recommendations</h4>
+                            <p>Our AI recommends the best programs for you</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <h4>Apply & Track</h4>
+                            <p>Apply to programs and track your application status</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 NoApplAI. Automated University Application Portal.</p>
+        </div>
+    </footer>
+
+    <script type="module" src="js/index.js"></script>
+</body>
+</html>

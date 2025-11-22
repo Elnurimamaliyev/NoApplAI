@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Program Recommendations - NoApplAI</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h1>NoApplAI</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="upload.html" class="nav-link">Upload Documents</a></li>
+                <li><a href="recommendations.html" class="nav-link active">Recommendations</a></li>
+                <li><a href="tracking.html" class="nav-link">Track Applications</a></li>
+                <li><a href="index.html" id="logoutBtn" class="nav-link">Logout</a></li>
+            </ul>
+            <div class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h2>Recommended Programs</h2>
+                <p>Based on your profile and documents</p>
+            </div>
+
+            <div class="filters-section">
+                <h3>Customize Your Preferences</h3>
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label for="gpaInput">Your GPA (0.0 - 4.0)</label>
+                        <input type="number" id="gpaInput" min="0" max="4" step="0.1" value="3.5" class="form-control">
+                    </div>
+                    <div class="filter-group">
+                        <label for="countryFilter">Preferred Countries</label>
+                        <select id="countryFilter" class="form-control" multiple>
+                            <option value="USA">USA</option>
+                            <option value="UK">UK</option>
+                            <option value="Germany">Germany</option>
+                            <option value="Switzerland">Switzerland</option>
+                            <option value="Canada">Canada</option>
+                            <option value="Singapore">Singapore</option>
+                        </select>
+                        <small>Hold Ctrl/Cmd to select multiple</small>
+                    </div>
+                    <div class="filter-actions">
+                        <button id="applyFilters" class="btn btn-primary">Apply Filters</button>
+                        <button id="resetFilters" class="btn btn-secondary">Reset</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="recommendationsList" class="recommendations-list">
+                <div class="loading">Loading recommendations...</div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 NoApplAI. Automated University Application Portal.</p>
+        </div>
+    </footer>
+
+    <script type="module" src="js/recommendations.js"></script>
+</body>
+</html>
