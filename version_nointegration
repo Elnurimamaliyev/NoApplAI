@@ -1,0 +1,1986 @@
+<!doctype html>
+<html lang="az">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NoApplAI - AI-Powered University Application Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;family=Montserrat:wght@700;800;900&amp;display=swap" rel="stylesheet">
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    
+    html, body {
+      height: 100%;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Montserrat', sans-serif;
+    }
+    
+    /* Page transitions */
+    .page {
+      display: none;
+      min-height: 100%;
+      opacity: 0;
+      animation: fadeOut 0.3s ease;
+    }
+    
+    .page.active {
+      display: block;
+      opacity: 1;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+      }
+    }
+    
+    /* Advanced animations */
+    @keyframes slideInFromLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    @keyframes slideInFromRight {
+      from {
+        opacity: 0;
+        transform: translateX(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    @keyframes slideInFromBottom {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes scaleIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      50% {
+        opacity: 0.8;
+        transform: scale(1.05);
+      }
+    }
+    
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    
+    @keyframes shimmer {
+      0% {
+        background-position: -1000px 0;
+      }
+      100% {
+        background-position: 1000px 0;
+      }
+    }
+    
+    .animate-slide-in-left {
+      animation: slideInFromLeft 0.6s ease forwards;
+    }
+    
+    .animate-slide-in-right {
+      animation: slideInFromRight 0.6s ease forwards;
+    }
+    
+    .animate-slide-in-bottom {
+      animation: slideInFromBottom 0.6s ease forwards;
+    }
+    
+    .animate-scale-in {
+      animation: scaleIn 0.5s ease forwards;
+    }
+    
+    .stagger-1 { animation-delay: 0.1s; opacity: 0; }
+    .stagger-2 { animation-delay: 0.2s; opacity: 0; }
+    .stagger-3 { animation-delay: 0.3s; opacity: 0; }
+    .stagger-4 { animation-delay: 0.4s; opacity: 0; }
+    .stagger-5 { animation-delay: 0.5s; opacity: 0; }
+    .stagger-6 { animation-delay: 0.6s; opacity: 0; }
+    
+    /* Card hover effects */
+    .card-hover {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-origin: center;
+    }
+    
+    .card-hover:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .card-hover:active {
+      transform: translateY(-4px) scale(1.01);
+    }
+    
+    /* Gradient backgrounds */
+    .gradient-hero {
+      background: linear-gradient(135deg, #0A2540 0%, #1a4568 50%, #5CE1E6 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .gradient-hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(92, 225, 230, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 50%, rgba(92, 225, 230, 0.1) 0%, transparent 50%);
+      animation: pulse 4s ease-in-out infinite;
+    }
+    
+    .gradient-text {
+      background: linear-gradient(135deg, #5CE1E6 0%, #0A2540 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    /* Notification badge */
+    .notification-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 10px;
+      height: 10px;
+      background: #EF4444;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+    }
+    
+    /* Toggle switch */
+    .toggle-checkbox {
+      appearance: none;
+      width: 52px;
+      height: 28px;
+      background-color: #E5E7EB;
+      border-radius: 28px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .toggle-checkbox::after {
+      content: '';
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background-color: white;
+      top: 2px;
+      left: 2px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    
+    .toggle-checkbox:checked {
+      background: linear-gradient(135deg, #5CE1E6 0%, #4AC9CE 100%);
+    }
+    
+    .toggle-checkbox:checked::after {
+      left: 26px;
+    }
+    
+    .toggle-checkbox:hover {
+      box-shadow: 0 0 0 3px rgba(92, 225, 230, 0.2);
+    }
+    
+    /* Upload zone */
+    .upload-zone {
+      border: 3px dashed #D1D5DB;
+      transition: all 0.3s ease;
+      background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+    }
+    
+    .upload-zone:hover {
+      border-color: #5CE1E6;
+      background: linear-gradient(135deg, #F0FDFF 0%, #E6FAFB 100%);
+      box-shadow: 0 10px 30px rgba(92, 225, 230, 0.15);
+    }
+    
+    .upload-zone.dragover {
+      border-color: #5CE1E6;
+      background: linear-gradient(135deg, #E6FAFB 0%, #D0F8FA 100%);
+      border-width: 4px;
+      box-shadow: 0 20px 40px rgba(92, 225, 230, 0.25);
+      transform: scale(1.02);
+    }
+    
+    /* Notification dropdown */
+    .notification-dropdown {
+      display: none;
+      position: absolute;
+      top: 70px;
+      right: 20px;
+      width: 400px;
+      max-height: 550px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+      border: 1px solid #E5E7EB;
+      z-index: 1000;
+      overflow: hidden;
+    }
+    
+    .notification-dropdown.show {
+      display: block;
+      animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    
+    .notification-item {
+      transition: all 0.2s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .notification-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(92, 225, 230, 0.1), transparent);
+      transition: left 0.5s ease;
+    }
+    
+    .notification-item:hover::before {
+      left: 100%;
+    }
+    
+    .notification-item:hover {
+      background-color: #F0FDFF;
+      transform: translateX(4px);
+    }
+    
+    .notification-item.unread {
+      background-color: #F9FAFB;
+      border-left: 4px solid #5CE1E6;
+    }
+    
+    /* Buttons */
+    .btn-primary {
+      background: linear-gradient(135deg, #0A2540 0%, #1a4568 100%);
+      color: white;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn-primary::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+    
+    .btn-primary:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+    
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #0d3054 0%, #1f5178 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(10, 37, 64, 0.4);
+    }
+    
+    .btn-primary:active {
+      transform: translateY(0);
+      box-shadow: 0 5px 15px rgba(10, 37, 64, 0.3);
+    }
+    
+    .btn-secondary {
+      background: linear-gradient(135deg, #5CE1E6 0%, #4AC9CE 100%);
+      color: #0A2540;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .btn-secondary::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+    
+    .btn-secondary:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+    
+    .btn-secondary:hover {
+      background: linear-gradient(135deg, #4AC9CE 0%, #38B8BD 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(92, 225, 230, 0.4);
+    }
+    
+    .btn-secondary:active {
+      transform: translateY(0);
+      box-shadow: 0 5px 15px rgba(92, 225, 230, 0.3);
+    }
+    
+    /* Status badges */
+    .status-badge {
+      padding: 6px 14px;
+      border-radius: 14px;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+    }
+    
+    .status-badge:hover {
+      transform: scale(1.05);
+    }
+    
+    .status-submitted {
+      background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%);
+      color: #1E40AF;
+      box-shadow: 0 2px 8px rgba(30, 64, 175, 0.15);
+    }
+    
+    .status-review {
+      background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+      color: #92400E;
+      box-shadow: 0 2px 8px rgba(146, 64, 14, 0.15);
+    }
+    
+    .status-offer {
+      background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+      color: #065F46;
+      box-shadow: 0 2px 8px rgba(6, 95, 70, 0.15);
+    }
+    
+    .status-missing {
+      background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+      color: #991B1B;
+      box-shadow: 0 2px 8px rgba(153, 27, 27, 0.15);
+    }
+    
+    /* Progress bar */
+    .progress-bar {
+      height: 8px;
+      background: linear-gradient(90deg, #E5E7EB 0%, #F3F4F6 100%);
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #5CE1E6 0%, #4AC9CE 50%, #38B8BD 100%);
+      transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .progress-bar-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      animation: shimmer 2s infinite;
+    }
+    
+    /* Toast notifications */
+    .toast-notification {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: white;
+      border-radius: 16px;
+      padding: 20px 28px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+      z-index: 2000;
+      animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      max-width: 420px;
+      border-left: 5px solid;
+    }
+    
+    @keyframes slideInRight {
+      from {
+        transform: translateX(120%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    
+    @keyframes slideOutRight {
+      from {
+        transform: translateX(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(120%);
+        opacity: 0;
+      }
+    }
+    
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1500;
+      padding: 20px;
+    }
+    
+    .modal-overlay.show {
+      display: flex;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .modal-content {
+      background: white;
+      border-radius: 24px;
+      padding: 40px;
+      max-width: 700px;
+      width: 100%;
+      max-height: 85%;
+      overflow-y: auto;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+      animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+    
+    @keyframes slideUp {
+      from {
+        transform: translateY(100px) scale(0.9);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+    }
+    
+    .modal-content::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .modal-content::-webkit-scrollbar-track {
+      background: #F3F4F6;
+      border-radius: 8px;
+    }
+    
+    .modal-content::-webkit-scrollbar-thumb {
+      background: #5CE1E6;
+      border-radius: 8px;
+    }
+    
+    /* Stat card */
+    .stat-card {
+      background: white;
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid transparent;
+    }
+    
+    .stat-card:hover {
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+      border-color: #5CE1E6;
+      transform: translateY(-4px);
+    }
+    
+    /* Activity timeline */
+    .activity-timeline {
+      position: relative;
+      padding-left: 50px;
+    }
+    
+    .activity-timeline::before {
+      content: '';
+      position: absolute;
+      left: 24px;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: linear-gradient(180deg, #5CE1E6 0%, #E5E7EB 100%);
+    }
+    
+    .activity-item {
+      position: relative;
+      margin-bottom: 32px;
+    }
+    
+    .activity-dot {
+      position: absolute;
+      left: -34px;
+      top: 4px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: white;
+      border: 4px solid #5CE1E6;
+      box-shadow: 0 4px 12px rgba(92, 225, 230, 0.3);
+      z-index: 1;
+    }
+    
+    /* Chips */
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 24px;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+    
+    .chip:hover {
+      transform: scale(1.08);
+      border-color: currentColor;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Nav link */
+    .nav-link {
+      position: relative;
+      padding-bottom: 6px;
+      transition: all 0.3s ease;
+    }
+    
+    .nav-link.active {
+      color: #0A2540;
+      font-weight: 700;
+    }
+    
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #5CE1E6 0%, #4AC9CE 100%);
+      border-radius: 3px;
+      animation: slideInFromLeft 0.3s ease;
+    }
+    
+    .nav-link:hover:not(.active) {
+      color: #5CE1E6;
+    }
+    
+    /* AI badge */
+    .ai-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: linear-gradient(135deg, #5CE1E6 0%, #4AC9CE 100%);
+      color: #0A2540;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 12px rgba(92, 225, 230, 0.3);
+      animation: pulse 3s infinite;
+    }
+    
+    /* Loading spinner */
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #E5E7EB;
+      border-top-color: #5CE1E6;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    
+    /* Search input focus */
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #5CE1E6 !important;
+      box-shadow: 0 0 0 4px rgba(92, 225, 230, 0.15) !important;
+    }
+    
+    /* Program card */
+    .program-card {
+      background: white;
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid transparent;
+    }
+    
+    .program-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
+      border-color: #5CE1E6;
+    }
+    
+    /* Document card */
+    .document-card {
+      background: linear-gradient(135deg, #F8F9FC 0%, #F3F4F6 100%);
+      border-radius: 16px;
+      padding: 24px;
+      border: 3px solid transparent;
+      transition: all 0.4s ease;
+    }
+    
+    .document-card.uploaded {
+      border-color: #10B981;
+      background: linear-gradient(135deg, #D1FAE5 0%, #ECFDF5 100%);
+    }
+    
+    .document-card.missing {
+      border-color: #F59E0B;
+      background: linear-gradient(135deg, #FEF3C7 0%, #FEF9C3 100%);
+    }
+    
+    .document-card:hover {
+      border-color: #5CE1E6;
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+    }
+    
+    /* Skeleton loading */
+    .skeleton {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: loading 1.5s infinite;
+      border-radius: 8px;
+    }
+    
+    @keyframes loading {
+      0% {
+        background-position: 200% 0;
+      }
+      100% {
+        background-position: -200% 0;
+      }
+    }
+    
+    /* Filter chip */
+    .filter-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      background: #F8F9FC;
+      border-radius: 24px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #0A2540;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+    
+    .filter-chip:hover {
+      background: #E6FAFB;
+      border-color: #5CE1E6;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(92, 225, 230, 0.2);
+    }
+    
+    .filter-chip.active {
+      background: linear-gradient(135deg, #5CE1E6 0%, #4AC9CE 100%);
+      color: #0A2540;
+      border-color: #5CE1E6;
+      box-shadow: 0 4px 12px rgba(92, 225, 230, 0.3);
+    }
+    
+    /* Responsive utilities */
+    @media (max-width: 768px) {
+      .notification-dropdown {
+        width: calc(100% - 40px);
+        right: 20px;
+        left: 20px;
+      }
+      
+      .modal-content {
+        padding: 24px;
+      }
+      
+      .stat-card {
+        padding: 20px;
+      }
+      
+      .program-card, .document-card {
+        padding: 20px;
+      }
+    }
+    
+    /* Scroll animations */
+    .scroll-fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    
+    .scroll-fade-in.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* Hover glow effect */
+    .glow-on-hover {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .glow-on-hover::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(92, 225, 230, 0.3) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+    }
+    
+    .glow-on-hover:hover::before {
+      opacity: 1;
+    }
+    
+    /* Badge animations */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 14px;
+      border-radius: 14px;
+      font-size: 12px;
+      font-weight: 700;
+      gap: 6px;
+      transition: all 0.3s ease;
+    }
+    
+    .badge:hover {
+      transform: scale(1.08);
+    }
+    
+    .badge-success {
+      background: linear-gradient(135deg, #D1FAE5 0%, #A7F3D0 100%);
+      color: #065F46;
+      box-shadow: 0 2px 8px rgba(6, 95, 70, 0.15);
+    }
+    
+    .badge-warning {
+      background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+      color: #92400E;
+      box-shadow: 0 2px 8px rgba(146, 64, 14, 0.15);
+    }
+    
+    .badge-info {
+      background: linear-gradient(135deg, #DBEAFE 0%, #BFDBFE 100%);
+      color: #1E40AF;
+      box-shadow: 0 2px 8px rgba(30, 64, 175, 0.15);
+    }
+    
+    .badge-error {
+      background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%);
+      color: #991B1B;
+      box-shadow: 0 2px 8px rgba(153, 27, 27, 0.15);
+    }
+    
+    /* Input file hidden */
+    input[type="file"] {
+      display: none;
+    }
+    
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #F3F4F6;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(135deg, #5CE1E6 0%, #4AC9CE 100%);
+      border-radius: 10px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(135deg, #4AC9CE 0%, #38B8BD 100%);
+    }
+    
+    /* Ripple effect */
+    .ripple {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .ripple::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.5);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+    
+    .ripple:active::after {
+      width: 300px;
+      height: 300px;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="bg-[#F8F9FC]"><!-- Top Navigation -->
+  <header class="bg-white sticky top-0 z-50 shadow-sm transition-all duration-300">
+   <nav class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center space-x-8">
+     <div class="flex items-center space-x-3 cursor-pointer group" onclick="navigateToPage('landing')">
+      <svg class="w-10 h-10 transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110" viewbox="0 0 40 40" fill="none"><rect width="40" height="40" rx="10" fill="#0A2540" /> <path d="M20 10L28 16V24L20 30L12 24V16L20 10Z" fill="#5CE1E6" /> <circle cx="20" cy="20" r="4" fill="white" />
+      </svg><span class="text-2xl font-black text-[#0A2540] transition-all duration-300 group-hover:text-[#5CE1E6]">NoApplAI</span>
+     </div>
+     <div class="hidden md:flex items-center space-x-6"><a href="#" class="nav-link text-gray-600 hover:text-[#0A2540] transition font-medium" data-page="dashboard" onclick="navigateToPage('dashboard'); return false;">Dashboard</a> <a href="#" class="nav-link text-gray-600 hover:text-[#0A2540] transition font-medium" data-page="programs" onclick="navigateToPage('programs'); return false;">Programs</a> <a href="#" class="nav-link text-gray-600 hover:text-[#0A2540] transition font-medium" data-page="upload" onclick="navigateToPage('upload'); return false;">Upload</a> <a href="#" class="nav-link text-gray-600 hover:text-[#0A2540] transition font-medium" data-page="applications" onclick="navigateToPage('applications'); return false;">Applications</a> <a href="#" class="nav-link text-gray-600 hover:text-[#0A2540] transition font-medium" data-page="profile" onclick="navigateToPage('profile'); return false;">Profile</a>
+     </div>
+    </div>
+    <div class="flex items-center space-x-4"><button class="relative p-2 hover:bg-[#F8F9FC] rounded-xl transition-all duration-300 group" onclick="toggleNotifications()" id="notification-button">
+      <svg class="w-6 h-6 text-[#0A2540] group-hover:text-[#5CE1E6] transition-colors" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+      </svg><span id="notification-badge" class="notification-badge"></span> </button>
+     <div class="flex items-center space-x-3 pl-3 border-l border-gray-200">
+      <div class="w-11 h-11 bg-gradient-to-br from-[#5CE1E6] to-[#4AC9CE] rounded-full flex items-center justify-center text-[#0A2540] font-black text-lg cursor-pointer shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110 glow-on-hover" onclick="navigateToPage('profile')">
+       Q
+      </div>
+     </div>
+    </div>
+   </nav>
+  </header><!-- Notifications Dropdown -->
+  <div id="notifications-dropdown" class="notification-dropdown">
+   <div class="p-5 border-b border-gray-200 flex items-center justify-between bg-gradient-to-r from-[#F8F9FC] to-white">
+    <h3 class="text-lg font-black text-[#0A2540]">Notifications</h3><button class="text-xs font-bold text-[#5CE1E6] hover:text-[#4AC9CE] transition px-3 py-1 rounded-lg hover:bg-[#E6FAFB]" onclick="markAllAsRead()">Mark all as read</button>
+   </div>
+   <div id="notifications-list" style="max-height: 400px; overflow-y: auto;"><!-- Notifications will be populated by JavaScript -->
+   </div>
+   <div class="p-4 border-t border-gray-200 text-center bg-gradient-to-r from-white to-[#F8F9FC]"><a href="#" class="text-sm font-bold text-[#5CE1E6] hover:text-[#4AC9CE] transition inline-flex items-center gap-2" onclick="navigateToPage('dashboard'); return false;"> <span>View All Notifications</span>
+     <svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+     </svg></a>
+   </div>
+  </div><!-- Toast Container -->
+  <div id="toast-container" style="position: fixed; bottom: 24px; right: 24px; z-index: 2000; display: flex; flex-direction: column; gap: 12px;">
+  </div><!-- Modal Overlay -->
+  <div id="modal-overlay" class="modal-overlay" onclick="closeModal(event)">
+   <div class="modal-content" onclick="event.stopPropagation()"><button onclick="closeModal({target: document.getElementById('modal-overlay')})" class="absolute top-6 right-6 w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-all duration-300 hover:rotate-90">
+     <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+     </svg></button>
+    <div id="modal-body"><!-- Modal content will be populated by JavaScript -->
+    </div>
+   </div>
+  </div><!-- Page 1: Landing -->
+  <div id="page-landing" class="page active"><!-- Hero Section -->
+   <section class="gradient-hero py-24 px-6 relative">
+    <div class="max-w-6xl mx-auto text-center relative z-10">
+     <div class="inline-flex items-center gap-3 px-5 py-3 bg-white/10 backdrop-blur-md rounded-full mb-8 animate-slide-in-bottom border border-white/20"><span class="ai-badge">AI Powered</span> <span class="text-white text-sm font-semibold">Trusted by 50,000+ students worldwide</span>
+     </div>
+     <h1 id="hero-title" class="text-5xl md:text-7xl font-black text-white mb-8 leading-tight animate-slide-in-bottom stagger-1">Your University Applications,<br>
+      Simplified by AI</h1>
+     <p id="hero-subtitle" class="text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto animate-slide-in-bottom stagger-2 leading-relaxed">NoApplAI streamlines your academic application journey with intelligent recommendations, document management, and deadline tracking — all powered by AI.</p>
+     <div class="flex flex-col sm:flex-row items-center justify-center gap-5 animate-slide-in-bottom stagger-3"><button onclick="navigateToPage('dashboard')" class="btn-primary px-10 py-5 rounded-2xl font-black text-lg shadow-2xl flex items-center gap-3 ripple"> <span>Get Started Free</span>
+       <svg class="w-6 h-6" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+       </svg></button> <button onclick="showDemoModal()" class="bg-white/10 backdrop-blur-md border-2 border-white text-white px-10 py-5 rounded-2xl font-black text-lg hover:bg-white/20 transition-all duration-300 flex items-center gap-3 ripple">
+       <svg class="w-6 h-6" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+       </svg><span>Watch Demo</span> </button>
+     </div>
+     <div class="mt-16 flex items-center justify-center gap-10 text-white/80 text-sm flex-wrap animate-slide-in-bottom stagger-4">
+      <div class="flex items-center gap-3">
+       <svg class="w-6 h-6 text-[#5CE1E6]" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+       </svg><span class="font-semibold">Free forever</span>
+      </div>
+      <div class="flex items-center gap-3">
+       <svg class="w-6 h-6 text-[#5CE1E6]" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+       </svg><span class="font-semibold">No credit card required</span>
+      </div>
+      <div class="flex items-center gap-3">
+       <svg class="w-6 h-6 text-[#5CE1E6]" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+       </svg><span class="font-semibold">Cancel anytime</span>
+      </div>
+     </div>
+    </div>
+   </section><!-- Features Section -->
+   <section class="py-24 px-6 bg-white">
+    <div class="max-w-6xl mx-auto">
+     <div class="text-center mb-20">
+      <div class="inline-block px-5 py-2 bg-[#E6FAFB] rounded-full mb-5 animate-scale-in"><span class="text-[#0A2540] font-bold text-sm">✨ AI-Powered Features</span>
+      </div>
+      <h2 class="text-5xl font-black text-[#0A2540] mb-6 animate-slide-in-bottom">Everything you need for success</h2>
+      <p class="text-xl text-gray-600 animate-slide-in-bottom stagger-1">Intelligent tools designed to simplify your application journey</p>
+     </div>
+     <div class="grid md:grid-cols-3 gap-8">
+      <div class="bg-gradient-to-br from-[#F8F9FC] to-white rounded-3xl p-10 card-hover border-2 border-transparent hover:border-[#5CE1E6] animate-slide-in-left stagger-1">
+       <div class="w-20 h-20 bg-gradient-to-br from-[#5CE1E6] to-[#4AC9CE] rounded-2xl flex items-center justify-center mb-8 shadow-xl">
+        <svg class="w-10 h-10 text-[#0A2540]" fill="currentColor" viewbox="0 0 20 20"><path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707z" />
+        </svg>
+       </div>
+       <h3 class="text-2xl font-black text-[#0A2540] mb-4">Smart Matching</h3>
+       <p class="text-gray-600 mb-6 leading-relaxed">AI analyzes your profile and recommends the best-fit university programs tailored to your goals and strengths.</p>
+       <ul class="space-y-3 text-sm text-gray-600">
+        <li class="flex items-center gap-3">
+         <svg class="w-5 h-5 text-[#5CE1E6] flex-shrink-0" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+         </svg><span class="font-medium">Personalized recommendations</span></li>
+        <li class="flex items-center gap-3">
+         <svg class="w-5 h-5 text-[#5CE1E6] flex-shrink-0" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+         </svg><span class="font-medium">Match score algorithm</span></li>
+        <li class="flex items-center gap-3">
+         <svg class="w-5 h-5 text-[#5CE1E6] flex-shrink-0" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+         </svg><span class="font-medium">Real-time updates</span></li>
+       </ul>
+      </div>
+      <div class="bg-gradient-to-br from-[#F8F9FC] to-white rounded-3xl p-10 card-hover border-2 border-transparent hover:border-[#5CE1E6] animate-slide-in-bottom stagger-2">
+       <div class="w-20 h-20 bg-gradient-to-br from-[#5CE1E6] to-[#4AC9CE] rounded-2xl flex items-center justify-center mb-8 shadow-xl">
+        <svg class="w-10 h-10 text-[#0A2540]" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" />
+        </svg>
+       </div>
+       <h3 class="text-2xl font-black text-[#0A2540] mb-4">Document Management</h3>
+       <p class="text-gray-600 mb-6 leading-relaxed">Upload, organize, and validate all your documents with AI-powered quality checks and format verification.</p>
+       <ul class="space-y-3 text-sm text-gray-600">
+        <li class="flex items-center gap-3">
+         <svg class="w-5 h-5 text-[#5CE1E6] flex-shrink-0" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+         </svg><span class="font-medium">AI document validation</span></li>
+        <li class="flex items-center gap-3">
+         <svg class="w-5 h-5 text-[#5CE1E6] flex-shrink-0" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+         </svg><span class="font-medium">Secure cloud storage</span></li>
+        <li class="flex items-center gap-3">
+         <svg class="w-5 h-5 text-[#5CE1E6] flex-shrink-0" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+         </svg><span class="font-medium">Version control</span></li>
+       </ul>
+      </div>
+      <div class="bg-gradient-to-br from-[#F8F9FC] to-white rounded-3xl p-10 card-hover border-2 border-transparent hover:border-[#5CE1E6] animate-slide-in-right stagger-3">
+       <div class="w-20 h-20 bg-gradient-to-br from-[#5CE1E6] to-[#4AC9CE] rounded-2xl flex items-center justify-center mb-8 shadow-xl">
+        <svg class="w-10 h-10 text-[#0A2540]" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+        </svg>
+       </div>
+       <h3 class="text-2xl font-black text-[#0A2540] mb-4">Deadline Tracking</h3>
+       <p class="text-gray-600 mb-6 leading-relaxed">Never miss an application deadline with intelligent reminders, timeline management, and priority alerts.</p>
+       <ul class="space-y-3 text-sm text-gray-600">
+        <li class="flex items-center gap-3">
+         <svg class="w-5 h-5 text-[#5CE1E6] flex-shrink-0" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+         </svg><span class="font-medium">Smart notifications</span></li>
+        <li class="flex items-center gap-3">
+         <svg class="w-5 h-5 text-[#5CE1E6] flex-shrink-0" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+         </svg><span class="font-medium">Calendar integration</span></li>
+        <li class="flex items-center gap-3">
+         <svg class="w-5 h-5 text-[#5CE1E6] flex-shrink-0" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+         </svg><span class="font-medium">Priority management</span></li>
+       </ul>
+      </div>
+     </div>
+    </div>
+   </section><!-- Stats Section -->
+   <section class="py-20 px-6 bg-gradient-to-br from-[#F8F9FC] to-white">
+    <div class="max-w-6xl mx-auto">
+     <div class="grid md:grid-cols-4 gap-8">
+      <div class="text-center animate-scale-in stagger-1">
+       <div class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#0A2540] to-[#5CE1E6] mb-3">
+        50K+
+       </div>
+       <p class="text-gray-600 font-bold text-lg">Active Students</p>
+      </div>
+      <div class="text-center animate-scale-in stagger-2">
+       <div class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#0A2540] to-[#5CE1E6] mb-3">
+        1.2M+
+       </div>
+       <p class="text-gray-600 font-bold text-lg">Applications Submitted</p>
+      </div>
+      <div class="text-center animate-scale-in stagger-3">
+       <div class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#0A2540] to-[#5CE1E6] mb-3">
+        500+
+       </div>
+       <p class="text-gray-600 font-bold text-lg">Partner Universities</p>
+      </div>
+      <div class="text-center animate-scale-in stagger-4">
+       <div class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#0A2540] to-[#5CE1E6] mb-3">
+        94%
+       </div>
+       <p class="text-gray-600 font-bold text-lg">Success Rate</p>
+      </div>
+     </div>
+    </div>
+   </section><!-- CTA Section -->
+   <section class="py-24 px-6 bg-gradient-to-r from-[#0A2540] via-[#1a4568] to-[#0A2540] relative overflow-hidden">
+    <div class="absolute inset-0 opacity-20">
+     <div class="absolute top-0 left-0 w-96 h-96 bg-[#5CE1E6] rounded-full filter blur-3xl"></div>
+     <div class="absolute bottom-0 right-0 w-96 h-96 bg-[#5CE1E6] rounded-full filter blur-3xl"></div>
+    </div>
+    <div class="max-w-4xl mx-auto text-center relative z-10">
+     <h2 class="text-5xl md:text-6xl font-black text-white mb-8 leading-tight animate-slide-in-bottom">Ready to Start Your Journey?</h2>
+     <p class="text-2xl text-white/90 mb-12 animate-slide-in-bottom stagger-1">Join thousands of students using AI to simplify their university applications.</p>
+     <div class="flex flex-col sm:flex-row items-center justify-center gap-5 animate-slide-in-bottom stagger-2"><button onclick="navigateToPage('dashboard')" class="btn-secondary px-12 py-5 rounded-2xl font-black text-xl shadow-2xl flex items-center gap-3 ripple"> <span>Create Free Account</span>
+       <svg class="w-6 h-6" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+       </svg></button> <button onclick="showContactModal()" class="bg-white/10 backdrop-blur-md border-2 border-white text-white px-12 py-5 rounded-2xl font-black text-xl hover:bg-white/20 transition-all duration-300 ripple"> Schedule Demo </button>
+     </div>
+     <p class="text-white/70 text-sm mt-8 animate-slide-in-bottom stagger-3">No credit card required • Free forever • Cancel anytime</p>
+    </div>
+   </section><!-- Footer -->
+   <footer class="bg-white py-16 border-t-2 border-gray-200">
+    <div class="max-w-7xl mx-auto px-6">
+     <div class="grid md:grid-cols-4 gap-12 mb-12">
+      <div>
+       <div class="flex items-center space-x-3 mb-6">
+        <svg class="w-10 h-10" viewbox="0 0 40 40" fill="none"><rect width="40" height="40" rx="10" fill="#0A2540" /> <path d="M20 10L28 16V24L20 30L12 24V16L20 10Z" fill="#5CE1E6" /> <circle cx="20" cy="20" r="4" fill="white" />
+        </svg><span class="text-2xl font-black text-[#0A2540]">NoApplAI</span>
+       </div>
+       <p class="text-gray-600 text-sm leading-relaxed font-medium">Smarter academic application journeys powered by AI technology</p>
+      </div>
+      <div>
+       <h4 class="font-black text-[#0A2540] mb-6 text-lg">Product</h4>
+       <ul class="space-y-3 text-sm text-gray-600 font-medium">
+        <li><a href="#" class="hover:text-[#5CE1E6] transition">Features</a></li>
+        <li><a href="#" class="hover:text-[#5CE1E6] transition">Pricing</a></li>
+        <li><a href="#" class="hover:text-[#5CE1E6] transition">Universities</a></li>
+        <li><a href="#" class="hover:text-[#5CE1E6] transition">Success Stories</a></li>
+       </ul>
+      </div>
+      <div>
+       <h4 class="font-black text-[#0A2540] mb-6 text-lg">Company</h4>
+       <ul class="space-y-3 text-sm text-gray-600 font-medium">
+        <li><a href="#" class="hover:text-[#5CE1E6] transition">About Us</a></li>
+        <li><a href="#" class="hover:text-[#5CE1E6] transition">Careers</a></li>
+        <li><a href="#" class="hover:text-[#5CE1E6] transition">Blog</a></li>
+        <li><a href="#" class="hover:text-[#5CE1E6] transition">Contact</a></li>
+       </ul>
+      </div>
+      <div>
+       <h4 class="font-black text-[#0A2540] mb-6 text-lg">Legal</h4>
+       <ul class="space-y-3 text-sm text-gray-600 font-medium">
+        <li><a href="#" class="hover:text-[#5CE1E6] transition">Privacy Policy</a></li>
+        <li><a href="#" class="hover:text-[#5CE1E6] transition">Terms of Service</a></li>
+        <li><a href="#" class="hover:text-[#5CE1E6] transition">Cookie Policy</a></li>
+        <li><a href="#" class="hover:text-[#5CE1E6] transition">Support</a></li>
+       </ul>
+      </div>
+     </div>
+     <div class="border-t-2 border-gray-200 pt-8 text-center">
+      <p id="footer-text" class="text-gray-600 text-sm font-semibold">© 2024 NoApplAI. All rights reserved.</p>
+     </div>
+    </div>
+   </footer>
+  </div><!-- Page 2: Dashboard -->
+  <div id="page-dashboard" class="page">
+   <section class="max-w-7xl mx-auto px-6 py-10">
+    <div class="mb-10 animate-slide-in-bottom">
+     <h1 id="welcome-message" class="text-5xl font-black text-[#0A2540] mb-3">Welcome back, Qurbanali!</h1>
+     <p id="dashboard-subtitle" class="text-xl text-gray-600">Here's your application progress and AI-powered recommendations.</p>
+    </div><!-- Progress Cards -->
+    <div class="grid md:grid-cols-4 gap-6 mb-10">
+     <div class="stat-card animate-scale-in stagger-1">
+      <div class="flex items-center justify-between mb-5">
+       <div class="w-14 h-14 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl flex items-center justify-center shadow-lg">
+        <svg class="w-7 h-7 text-blue-600" fill="currentColor" viewbox="0 0 20 20"><path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L14 2.586A2 2 0 0012.586 2H9z" />
+        </svg>
+       </div><span class="text-4xl font-black text-[#0A2540]" id="applications-count">4</span>
+      </div>
+      <p class="text-sm text-gray-600 font-bold mb-3">Active Applications</p>
+      <div class="flex items-center text-xs text-green-600 font-bold">
+       <svg class="w-4 h-4 mr-1" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clip-rule="evenodd" />
+       </svg><span>+2 this month</span>
+      </div>
+     </div>
+     <div class="stat-card animate-scale-in stagger-2">
+      <div class="flex items-center justify-between mb-5">
+       <div class="w-14 h-14 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl flex items-center justify-center shadow-lg">
+        <svg class="w-7 h-7 text-green-600" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" />
+        </svg>
+       </div><span class="text-4xl font-black text-[#0A2540]" id="documents-count">3/4</span>
+      </div>
+      <p class="text-sm text-gray-600 font-bold mb-3">Documents Uploaded</p>
+      <div class="progress-bar">
+       <div class="progress-bar-fill" style="width: 75%;"></div>
+      </div>
+     </div>
+     <div class="stat-card animate-scale-in stagger-3">
+      <div class="flex items-center justify-between mb-5">
+       <div class="w-14 h-14 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-2xl flex items-center justify-center shadow-lg">
+        <svg class="w-7 h-7 text-yellow-600" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+        </svg>
+       </div><span class="text-4xl font-black text-[#0A2540]" id="deadlines-count">2</span>
+      </div>
+      <p class="text-sm text-gray-600 font-bold mb-3">Upcoming Deadlines</p>
+      <div class="flex items-center text-xs text-orange-600 font-bold">
+       <svg class="w-4 h-4 mr-1" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+       </svg><span>3 days remaining</span>
+      </div>
+     </div>
+     <div class="stat-card animate-scale-in stagger-4">
+      <div class="flex items-center justify-between mb-5">
+       <div class="w-14 h-14 bg-gradient-to-br from-purple-100 to-purple-200 rounded-2xl flex items-center justify-center shadow-lg">
+        <svg class="w-7 h-7 text-purple-600" fill="currentColor" viewbox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+        </svg>
+       </div><span class="text-4xl font-black text-[#0A2540]" id="profile-completion">85%</span>
+      </div>
+      <p class="text-sm text-gray-600 font-bold mb-3">Profile Complete</p><button onclick="navigateToPage('profile')" class="text-xs text-[#5CE1E6] font-black hover:text-[#4AC9CE] transition flex items-center gap-1"> <span>Complete Profile</span>
+       <svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+       </svg></button>
+     </div>
+    </div><!-- AI Recommendations -->
+    <div class="bg-gradient-to-r from-cyan-50 via-blue-50 to-cyan-50 rounded-3xl p-10 border-2 border-[#5CE1E6] mb-10 card-hover animate-slide-in-bottom">
+     <div class="flex items-center space-x-4 mb-8">
+      <div class="w-16 h-16 bg-gradient-to-br from-[#5CE1E6] to-[#4AC9CE] rounded-2xl flex items-center justify-center shadow-xl">
+       <svg class="w-8 h-8 text-[#0A2540]" fill="currentColor" viewbox="0 0 20 20"><path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3z" />
+       </svg>
+      </div>
+      <div>
+       <h2 class="text-3xl font-black text-[#0A2540]">AI Recommendations</h2>
+       <p class="text-sm text-gray-600 font-semibold">Personalized matches based on your profile</p>
+      </div>
+     </div>
+     <div class="grid md:grid-cols-3 gap-6">
+      <div class="bg-white rounded-2xl p-6 card-hover glow-on-hover">
+       <div class="flex items-center justify-between mb-4">
+        <div class="w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 rounded-xl flex items-center justify-center text-white font-black text-lg shadow-lg">
+         H
+        </div><span class="badge badge-success">92% Match</span>
+       </div>
+       <h3 class="font-black text-[#0A2540] mb-2 text-lg">Harvard University</h3>
+       <p class="text-sm text-gray-600 mb-4 font-semibold">MSc Computer Science</p>
+       <div class="flex gap-2 mb-4 flex-wrap"><span class="chip" style="background: #DBEAFE; color: #1E40AF;">📍 USA</span> <span class="chip" style="background: #FEF3C7; color: #92400E;">💰 Scholarships</span>
+       </div><button onclick="navigateToPage('programs')" class="w-full btn-primary px-4 py-3 rounded-xl font-black text-sm">View Details</button>
+      </div>
+      <div class="bg-white rounded-2xl p-6 card-hover glow-on-hover">
+       <div class="flex items-center justify-between mb-4">
+        <div class="w-12 h-12 bg-gradient-to-br from-red-700 to-red-800 rounded-xl flex items-center justify-center text-white font-black text-lg shadow-lg">
+         S
+        </div><span class="badge badge-success">88% Match</span>
+       </div>
+       <h3 class="font-black text-[#0A2540] mb-2 text-lg">Stanford University</h3>
+       <p class="text-sm text-gray-600 mb-4 font-semibold">MBA Program</p>
+       <div class="flex gap-2 mb-4 flex-wrap"><span class="chip" style="background: #DBEAFE; color: #1E40AF;">📍 USA</span> <span class="chip" style="background: #D1FAE5; color: #065F46;">High Acceptance</span>
+       </div><button onclick="navigateToPage('programs')" class="w-full btn-primary px-4 py-3 rounded-xl font-black text-sm">View Details</button>
+      </div>
+      <div class="bg-white rounded-2xl p-6 card-hover glow-on-hover">
+       <div class="flex items-center justify-between mb-4">
+        <div class="w-12 h-12 bg-gradient-to-br from-gray-800 to-black rounded-xl flex items-center justify-center text-white font-black text-lg shadow-lg">
+         M
+        </div><span class="badge badge-success">85% Match</span>
+       </div>
+       <h3 class="font-black text-[#0A2540] mb-2 text-lg">MIT</h3>
+       <p class="text-sm text-gray-600 mb-4 font-semibold">MSc Engineering</p>
+       <div class="flex gap-2 mb-4 flex-wrap"><span class="chip" style="background: #DBEAFE; color: #1E40AF;">📍 USA</span> <span class="chip" style="background: #FEF3C7; color: #92400E;">💰 Scholarships</span>
+       </div><button onclick="navigateToPage('programs')" class="w-full btn-primary px-4 py-3 rounded-xl font-black text-sm">View Details</button>
+      </div>
+     </div>
+     <div class="mt-8 flex items-center justify-between flex-wrap gap-4">
+      <p class="text-sm text-gray-600 font-semibold">Based on your profile: <span class="font-black text-[#0A2540]">BSc Biology, 3.8 GPA</span></p><button onclick="navigateToPage('programs')" class="btn-secondary px-6 py-3 rounded-xl font-black text-sm">View All Matches</button>
+     </div>
+    </div><!-- Remaining dashboard content similar to original but with enhanced animations --> <!-- For brevity, including key sections with improved animations --> <!-- Upcoming Deadlines -->
+    <div class="bg-white rounded-3xl p-10 shadow-lg mb-10 animate-slide-in-bottom">
+     <div class="flex items-center justify-between mb-8">
+      <h2 class="text-3xl font-black text-[#0A2540]">Upcoming Deadlines</h2><button onclick="navigateToPage('applications')" class="text-sm font-black text-[#5CE1E6] hover:text-[#4AC9CE] transition flex items-center gap-2"> <span>View All</span>
+       <svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+       </svg></button>
+     </div>
+     <div class="space-y-5">
+      <div class="flex items-center justify-between p-6 bg-gradient-to-r from-[#FEF3C7] to-[#FDE68A] rounded-2xl border-l-4 border-yellow-500 card-hover flex-wrap gap-4">
+       <div class="flex items-center space-x-5">
+        <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-lg"><span class="text-red-600 font-black text-xl">3d</span>
+        </div>
+        <div>
+         <p class="font-black text-[#0A2540] text-lg">Stanford University — MBA</p>
+         <p class="text-sm text-gray-600 font-semibold">Application deadline • Submit remaining documents</p>
+        </div>
+       </div><button onclick="navigateToPage('applications')" class="btn-secondary px-6 py-3 rounded-xl font-black text-sm whitespace-nowrap">Complete</button>
+      </div>
+      <div class="flex items-center justify-between p-6 bg-[#F8F9FC] rounded-2xl card-hover flex-wrap gap-4">
+       <div class="flex items-center space-x-5">
+        <div class="w-16 h-16 bg-yellow-100 rounded-2xl flex items-center justify-center shadow-lg"><span class="text-yellow-600 font-black text-xl">7d</span>
+        </div>
+        <div>
+         <p class="font-black text-[#0A2540] text-lg">Cambridge — MSc AI</p>
+         <p class="text-sm text-gray-600 font-semibold">Document submission • English test certificate required</p>
+        </div>
+       </div><button onclick="navigateToPage('upload')" class="btn-primary px-6 py-3 rounded-xl font-black text-sm whitespace-nowrap">Upload</button>
+      </div>
+      <div class="flex items-center justify-between p-6 bg-[#F8F9FC] rounded-2xl card-hover flex-wrap gap-4">
+       <div class="flex items-center space-x-5">
+        <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center shadow-lg"><span class="text-blue-600 font-black text-xl">14d</span>
+        </div>
+        <div>
+         <p class="font-black text-[#0A2540] text-lg">Harvard University — MSc CS</p>
+         <p class="text-sm text-gray-600 font-semibold">Final submission • All documents completed</p>
+        </div>
+       </div><button class="bg-gradient-to-r from-green-100 to-green-200 text-green-700 px-6 py-3 rounded-xl font-black text-sm whitespace-nowrap border-2 border-green-300 shadow-lg">Ready to Submit</button>
+      </div>
+     </div>
+    </div><!-- Recent Activity & Quick Actions -->
+    <div class="grid lg:grid-cols-3 gap-8"><!-- Recent Activity -->
+     <div class="lg:col-span-2 bg-white rounded-3xl p-10 shadow-lg animate-slide-in-left">
+      <h2 class="text-3xl font-black text-[#0A2540] mb-8">Recent Activity</h2>
+      <div class="activity-timeline">
+       <div class="activity-item">
+        <div class="activity-dot" style="border-color: #10B981;"></div>
+        <div class="flex items-start justify-between flex-wrap gap-3">
+         <div class="flex-1">
+          <p class="text-sm font-black text-[#0A2540]">Transcript uploaded successfully</p>
+          <p class="text-xs text-gray-500 mt-1 font-semibold">Academic_Transcript_2023.pdf • 2 hours ago</p>
+         </div><span class="badge badge-success text-xs">✓ Verified</span>
+        </div>
+       </div>
+       <div class="activity-item">
+        <div class="activity-dot" style="border-color: #5CE1E6;"></div>
+        <div class="flex items-start justify-between flex-wrap gap-3">
+         <div class="flex-1">
+          <p class="text-sm font-black text-[#0A2540]">New AI program match: Harvard MSc Engineering</p>
+          <p class="text-xs text-gray-500 mt-1 font-semibold">92% match score • 3 hours ago</p>
+         </div><span class="badge badge-info text-xs">New</span>
+        </div>
+       </div>
+       <div class="activity-item">
+        <div class="activity-dot" style="border-color: #8B5CF6;"></div>
+        <div class="flex items-start justify-between flex-wrap gap-3">
+         <div class="flex-1">
+          <p class="text-sm font-black text-[#0A2540]">Application to MIT submitted</p>
+          <p class="text-xs text-gray-500 mt-1 font-semibold">MSc Engineering • 1 day ago</p>
+         </div><span class="badge" style="background: linear-gradient(135deg, #EDE9FE 0%, #DDD6FE 100%); color: #6B21A8;">Submitted</span>
+        </div>
+       </div>
+       <div class="activity-item">
+        <div class="activity-dot" style="border-color: #F59E0B;"></div>
+        <div class="flex items-start justify-between flex-wrap gap-3">
+         <div class="flex-1">
+          <p class="text-sm font-black text-[#0A2540]">Profile update: Added work experience</p>
+          <p class="text-xs text-gray-500 mt-1 font-semibold">Profile completion increased to 85% • 2 days ago</p>
+         </div>
+        </div>
+       </div>
+       <div class="activity-item" style="margin-bottom: 0;">
+        <div class="activity-dot" style="border-color: #3B82F6;"></div>
+        <div class="flex items-start justify-between flex-wrap gap-3">
+         <div class="flex-1">
+          <p class="text-sm font-black text-[#0A2540]">New recommendation letter received</p>
+          <p class="text-xs text-gray-500 mt-1 font-semibold">From Prof. Johnson • 3 days ago</p>
+         </div><span class="badge badge-info text-xs">✓ Saved</span>
+        </div>
+       </div>
+      </div>
+     </div><!-- Quick Actions -->
+     <div class="bg-white rounded-3xl p-10 shadow-lg animate-slide-in-right">
+      <h2 class="text-2xl font-black text-[#0A2540] mb-8">Quick Actions</h2>
+      <div class="space-y-4"><button onclick="navigateToPage('programs')" class="w-full bg-gradient-to-r from-[#5CE1E6] to-[#4AC9CE] rounded-2xl p-5 card-hover text-left ripple">
+        <div class="flex items-center space-x-4">
+         <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-lg">
+          <svg class="w-6 h-6 text-[#0A2540]" fill="currentColor" viewbox="0 0 20 20"><path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3z" />
+          </svg>
+         </div>
+         <div>
+          <p class="font-black text-[#0A2540] text-sm">Browse Programs</p>
+          <p class="text-xs text-[#0A2540]/70 font-semibold">Discover new universities</p>
+         </div>
+        </div></button> <button onclick="navigateToPage('upload')" class="w-full bg-[#F8F9FC] rounded-2xl p-5 hover:bg-gray-200 transition-all duration-300 text-left card-hover">
+        <div class="flex items-center space-x-4">
+         <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-lg">
+          <svg class="w-6 h-6 text-[#0A2540]" fill="currentColor" viewbox="0 0 20 20"><path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z" />
+          </svg>
+         </div>
+         <div>
+          <p class="font-black text-[#0A2540] text-sm">Upload Documents</p>
+          <p class="text-xs text-gray-600 font-semibold">1 document missing</p>
+         </div>
+        </div></button> <button onclick="navigateToPage('applications')" class="w-full bg-[#F8F9FC] rounded-2xl p-5 hover:bg-gray-200 transition-all duration-300 text-left card-hover">
+        <div class="flex items-center space-x-4">
+         <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-lg">
+          <svg class="w-6 h-6 text-[#0A2540]" fill="currentColor" viewbox="0 0 20 20"><path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L14 2.586A2 2 0 0012.586 2H9z" />
+          </svg>
+         </div>
+         <div>
+          <p class="font-black text-[#0A2540] text-sm">Track Applications</p>
+          <p class="text-xs text-gray-600 font-semibold">4 active applications</p>
+         </div>
+        </div></button> <button onclick="navigateToPage('profile')" class="w-full bg-gradient-to-br from-[#0A2540] to-[#1a4568] rounded-2xl p-5 hover:shadow-xl transition-all duration-300 text-left card-hover ripple">
+        <div class="flex items-center space-x-4">
+         <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-lg">
+          <svg class="w-6 h-6 text-[#0A2540]" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+          </svg>
+         </div>
+         <div>
+          <p class="font-black text-white text-sm">Complete Profile</p>
+          <p class="text-xs text-white/70 font-semibold">85% complete</p>
+         </div>
+        </div></button>
+      </div><!-- AI Tip -->
+      <div class="mt-8 p-5 bg-gradient-to-br from-cyan-50 to-blue-50 rounded-2xl border-2 border-[#5CE1E6]">
+       <div class="flex items-start space-x-3">
+        <svg class="w-6 h-6 text-[#5CE1E6] flex-shrink-0 mt-0.5" fill="currentColor" viewbox="0 0 20 20"><path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3z" />
+        </svg>
+        <div>
+         <p class="font-black text-[#0A2540] text-xs mb-2">💡 AI Tip</p>
+         <p class="text-xs text-gray-700 font-semibold leading-relaxed">Completing your profile increases match accuracy by 40%!</p>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <footer class="bg-white py-10 border-t-2 border-gray-200 mt-16">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+     <p class="text-gray-600 text-sm font-bold">© 2024 NoApplAI. All rights reserved.</p>
+    </div>
+   </footer>
+  </div><!-- Due to character limits, I'll provide the complete structure for Programs, Upload, Applications, and Profile pages --> <!-- These would follow the same enhanced animation and styling patterns --> <!-- Page 3: Programs (Enhanced version) -->
+  <div id="page-programs" class="page">
+   <section class="max-w-7xl mx-auto px-6 py-10">
+    <div class="mb-10 animate-slide-in-bottom">
+     <h1 id="programs-title" class="text-5xl font-black text-[#0A2540] mb-3">Discover Programs</h1>
+     <p id="programs-subtitle" class="text-xl text-gray-600">Search and explore university programs matched to your profile</p>
+    </div><!-- Search & Filters -->
+    <div class="bg-white rounded-3xl p-8 shadow-lg mb-10 animate-scale-in">
+     <div class="flex flex-col gap-5">
+      <div class="flex flex-col md:flex-row gap-4">
+       <div class="flex-1 relative">
+        <svg class="w-6 h-6 text-gray-400 absolute left-5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg><input type="text" id="program-search" placeholder="Search programs, universities, or locations..." class="w-full pl-14 pr-5 py-4 border-2 border-gray-200 rounded-2xl focus:border-[#5CE1E6] focus:outline-none font-semibold transition-all duration-300">
+       </div><select id="country-filter" class="px-5 py-4 border-2 border-gray-200 rounded-2xl focus:border-[#5CE1E6] focus:outline-none font-bold transition-all duration-300"> <option value="">All Countries</option> <option value="USA">USA</option> <option value="UK">UK</option> <option value="Canada">Canada</option> <option value="Australia">Australia</option> </select> <select id="degree-filter" class="px-5 py-4 border-2 border-gray-200 rounded-2xl focus:border-[#5CE1E6] focus:outline-none font-bold transition-all duration-300"> <option value="">All Degrees</option> <option value="Bachelor">Bachelor's</option> <option value="Master">Master's</option> <option value="PhD">PhD</option> </select> <button onclick="filterPrograms()" class="btn-secondary px-8 py-4 rounded-2xl font-black whitespace-nowrap ripple flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg> Search </button>
+      </div><!-- Filter Chips -->
+      <div class="flex flex-wrap gap-3"><span class="filter-chip" onclick="toggleFilter(this)">💰 Scholarships Available</span> <span class="filter-chip" onclick="toggleFilter(this)">⭐ High Match (85%+)</span> <span class="filter-chip" onclick="toggleFilter(this)">⚡ Fast Decision</span> <span class="filter-chip" onclick="toggleFilter(this)">🎯 No Application Fee</span> <span class="filter-chip" onclick="toggleFilter(this)">🌍 International Students</span>
+      </div>
+     </div>
+    </div><!-- Programs Grid -->
+    <div id="programs-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-10"><!-- Programs will be rendered by JavaScript -->
+    </div><!-- AI Tip -->
+    <div class="bg-gradient-to-r from-cyan-50 via-blue-50 to-cyan-50 rounded-3xl p-8 border-2 border-[#5CE1E6] animate-slide-in-bottom">
+     <div class="flex items-start space-x-4">
+      <svg class="w-8 h-8 text-[#5CE1E6] flex-shrink-0" fill="currentColor" viewbox="0 0 20 20"><path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3z" />
+      </svg>
+      <div>
+       <p class="font-black text-[#0A2540] mb-2 text-lg">💡 AI Recommendation</p>
+       <p class="text-sm text-gray-700 font-semibold leading-relaxed">Based on your profile, programs with 85%+ match rate have the highest acceptance probability. Consider applying to at least 3 high-match programs and 2 reach schools for the best strategy.</p>
+      </div>
+     </div>
+    </div>
+   </section>
+   <footer class="bg-white py-10 border-t-2 border-gray-200 mt-16">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+     <p class="text-gray-600 text-sm font-bold">© 2024 NoApplAI. All rights reserved.</p>
+    </div>
+   </footer>
+  </div><!-- Page 4: Upload -->
+  <div id="page-upload" class="page">
+   <section class="max-w-7xl mx-auto px-6 py-10">
+    <div class="mb-10 animate-slide-in-bottom">
+     <h1 id="upload-title" class="text-5xl font-black text-[#0A2540] mb-3">Upload Your Documents</h1>
+     <p id="upload-subtitle" class="text-xl text-gray-600">Upload and manage all required documents for your applications</p>
+    </div><!-- Progress Overview -->
+    <div class="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-3xl p-8 mb-10 border-2 border-blue-200 animate-scale-in">
+     <div class="flex items-center justify-between mb-5">
+      <div>
+       <h3 class="text-2xl font-black text-[#0A2540]">Document Progress</h3>
+       <p class="text-sm text-gray-600 font-semibold">3 of 4 documents uploaded</p>
+      </div>
+      <div class="text-right">
+       <p class="text-5xl font-black text-[#0A2540]">75%</p>
+       <p class="text-xs text-gray-600 font-bold">Complete</p>
+      </div>
+     </div>
+     <div class="progress-bar" style="height: 10px;">
+      <div class="progress-bar-fill" style="width: 75%; background: linear-gradient(90deg, #5CE1E6 0%, #4AC9CE 50%, #38B8BD 100%);"></div>
+     </div>
+    </div><!-- Required Documents -->
+    <div class="bg-white rounded-3xl p-10 shadow-lg mb-10 animate-slide-in-bottom">
+     <div class="flex items-center justify-between mb-8">
+      <h2 class="text-3xl font-black text-[#0A2540]">Required Documents</h2><span class="badge badge-warning">1 Missing</span>
+     </div>
+     <div class="grid md:grid-cols-2 gap-8" id="documents-grid"><!-- Documents will be rendered by JavaScript -->
+     </div>
+    </div><!-- Bulk Upload Zone -->
+    <div class="bg-white rounded-3xl p-10 shadow-lg mb-10 animate-slide-in-bottom">
+     <h2 class="text-3xl font-black text-[#0A2540] mb-8">Bulk Upload</h2>
+     <div class="upload-zone rounded-3xl p-16 text-center cursor-pointer" onclick="document.getElementById('file-input-bulk').click()" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+      <svg class="w-24 h-24 mx-auto text-gray-400 mb-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+      </svg>
+      <p class="text-2xl font-black text-[#0A2540] mb-3">Drag &amp; drop files here</p>
+      <p class="text-sm text-gray-600 mb-6 font-semibold">or click to browse from your computer</p><button class="btn-secondary px-10 py-4 rounded-2xl font-black ripple">
+       <svg class="w-5 h-5 inline mr-2" fill="currentColor" viewbox="0 0 20 20"><path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z" />
+       </svg> Choose Files </button>
+      <p class="text-xs text-gray-500 mt-8 font-semibold">Supported formats: PDF, JPG, PNG, DOCX • Max 10MB per file</p><input type="file" id="file-input-bulk" multiple accept=".pdf,.jpg,.jpeg,.png,.docx" onchange="handleFileUpload(event)">
+     </div>
+    </div><!-- AI Validation -->
+    <div class="bg-gradient-to-r from-cyan-50 to-blue-50 rounded-3xl p-8 border-2 border-[#5CE1E6] animate-slide-in-bottom">
+     <div class="flex items-start space-x-4">
+      <svg class="w-8 h-8 text-[#5CE1E6] flex-shrink-0" fill="currentColor" viewbox="0 0 20 20"><path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3z" />
+      </svg>
+      <div class="flex-1">
+       <p class="font-black text-[#0A2540] mb-3 text-lg">🤖 AI Document Validation</p>
+       <p class="text-sm text-gray-700 mb-6 font-semibold leading-relaxed">Our AI will automatically validate your documents for quality, completeness, and format requirements once uploaded. You'll receive instant feedback on any issues.</p>
+       <div class="flex gap-4 flex-wrap"><button onclick="saveDocuments()" class="btn-primary px-8 py-3 rounded-2xl font-black text-sm ripple">Save &amp; Continue</button> <button onclick="navigateToPage('dashboard')" class="bg-white text-[#0A2540] px-8 py-3 rounded-2xl font-black text-sm border-2 border-gray-200 hover:bg-gray-50 transition-all duration-300">Upload Later</button>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <footer class="bg-white py-10 border-t-2 border-gray-200 mt-16">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+     <p class="text-gray-600 text-sm font-bold">© 2024 NoApplAI. All rights reserved.</p>
+    </div>
+   </footer>
+  </div><!-- Page 5: Applications -->
+  <div id="page-applications" class="page">
+   <section class="max-w-7xl mx-auto px-6 py-10">
+    <div class="mb-10 animate-slide-in-bottom">
+     <h1 id="applications-title" class="text-5xl font-black text-[#0A2540] mb-3">Your Applications</h1>
+     <p id="applications-subtitle" class="text-xl text-gray-600">Track and manage all your university applications in one place</p>
+    </div><!-- Overview Stats -->
+    <div class="grid md:grid-cols-4 gap-6 mb-10">
+     <div class="stat-card animate-scale-in stagger-1">
+      <div class="flex items-center justify-between mb-3"><span class="text-4xl font-black text-[#0A2540]">4</span>
+       <div class="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl flex items-center justify-center shadow-lg">
+        <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewbox="0 0 20 20"><path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L14 2.586A2 2 0 0012.586 2H9z" />
+        </svg>
+       </div>
+      </div>
+      <p class="text-sm text-gray-600 font-black">Total Applications</p>
+     </div>
+     <div class="stat-card animate-scale-in stagger-2">
+      <div class="flex items-center justify-between mb-3"><span class="text-4xl font-black text-[#0A2540]">2</span>
+       <div class="w-12 h-12 bg-gradient-to-br from-yellow-100 to-yellow-200 rounded-2xl flex items-center justify-center shadow-lg">
+        <svg class="w-6 h-6 text-yellow-600" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+        </svg>
+       </div>
+      </div>
+      <p class="text-sm text-gray-600 font-black">In Review</p>
+     </div>
+     <div class="stat-card animate-scale-in stagger-3">
+      <div class="flex items-center justify-between mb-3"><span class="text-4xl font-black text-[#0A2540]">1</span>
+       <div class="w-12 h-12 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl flex items-center justify-center shadow-lg">
+        <svg class="w-6 h-6 text-green-600" fill="currentColor" viewbox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+        </svg>
+       </div>
+      </div>
+      <p class="text-sm text-gray-600 font-black">Offers Received</p>
+     </div>
+     <div class="stat-card animate-scale-in stagger-4">
+      <div class="flex items-center justify-between mb-3"><span class="text-4xl font-black text-[#0A2540]">1</span>
+       <div class="w-12 h-12 bg-gradient-to-br from-red-100 to-red-200 rounded-2xl flex items-center justify-center shadow-lg">
+        <svg class="w-6 h-6 text-red-600" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+        </svg>
+       </div>
+      </div>
+      <p class="text-sm text-gray-600 font-black">Action Required</p>
+     </div>
+    </div><!-- Applications List -->
+    <div class="bg-white rounded-3xl p-10 shadow-lg mb-10 animate-slide-in-bottom">
+     <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
+      <h2 class="text-3xl font-black text-[#0A2540]">Your Applications</h2>
+      <div class="flex flex-wrap gap-3"><select id="status-filter" class="px-5 py-3 border-2 border-gray-200 rounded-xl text-sm focus:border-[#5CE1E6] focus:outline-none font-bold transition-all duration-300"> <option value="">All Status</option> <option value="submitted">Submitted</option> <option value="review">In Review</option> <option value="offer">Offer</option> </select> <button onclick="navigateToPage('programs')" class="btn-secondary px-5 py-3 rounded-xl font-black text-sm flex items-center gap-2 ripple">
+        <svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+        </svg> New Application </button>
+      </div>
+     </div>
+     <div class="space-y-6" id="applications-list"><!-- Applications will be rendered by JavaScript -->
+     </div>
+    </div><!-- AI Next Steps -->
+    <div class="bg-gradient-to-r from-cyan-50 to-blue-50 rounded-3xl p-8 border-2 border-[#5CE1E6] animate-slide-in-bottom">
+     <div class="flex items-start space-x-4">
+      <svg class="w-8 h-8 text-[#5CE1E6] flex-shrink-0" fill="currentColor" viewbox="0 0 20 20"><path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3z" />
+      </svg>
+      <div>
+       <p class="font-black text-[#0A2540] mb-3 text-lg">🎯 AI Recommended Next Steps</p>
+       <ul class="text-sm text-gray-700 space-y-3 font-semibold">
+        <li class="flex items-start gap-3"><span class="text-[#5CE1E6] mt-1 font-black">•</span> <span><strong>Urgent:</strong> Upload English test certificate for Stanford MBA (3 days remaining)</span></li>
+        <li class="flex items-start gap-3"><span class="text-[#5CE1E6] mt-1 font-black">•</span> <span><strong>Action needed:</strong> Accept or decline Imperial College offer by Jan 20, 2024</span></li>
+        <li class="flex items-start gap-3"><span class="text-[#5CE1E6] mt-1 font-black">•</span> <span><strong>Suggestion:</strong> Consider applying to 2 more high-match programs (MIT at 85% match, Oxford at 82% match) to increase your chances</span></li>
+        <li class="flex items-start gap-3"><span class="text-[#5CE1E6] mt-1 font-black">•</span> <span><strong>Tip:</strong> Your Harvard application is ready for final submission. Review and submit before the deadline in 14 days.</span></li>
+       </ul>
+      </div>
+     </div>
+    </div>
+   </section>
+   <footer class="bg-white py-10 border-t-2 border-gray-200 mt-16">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+     <p class="text-gray-600 text-sm font-bold">© 2024 NoApplAI. All rights reserved.</p>
+    </div>
+   </footer>
+  </div><!-- Page 6: Profile -->
+  <div id="page-profile" class="page">
+   <section class="max-w-7xl mx-auto px-6 py-10">
+    <div class="mb-10 animate-slide-in-bottom">
+     <h1 id="profile-title" class="text-5xl font-black text-[#0A2540] mb-3">Your Profile</h1>
+     <p id="profile-subtitle" class="text-xl text-gray-600">Manage your personal information, account settings, and AI preferences</p>
+    </div>
+    <div class="grid lg:grid-cols-3 gap-8">
+     <div class="lg:col-span-2 space-y-8"><!-- Profile Card -->
+      <div class="bg-white rounded-3xl p-10 shadow-lg animate-slide-in-left">
+       <div class="flex items-center justify-between mb-8">
+        <h2 class="text-3xl font-black text-[#0A2540]">Profile Information</h2><button onclick="editProfile()" class="btn-secondary px-5 py-3 rounded-xl font-black flex items-center gap-2 ripple">
+         <svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+         </svg> Edit </button>
+       </div>
+       <div class="flex flex-col md:flex-row items-start md:items-center gap-8">
+        <div class="relative group">
+         <div class="w-36 h-36 bg-gradient-to-br from-[#5CE1E6] to-[#4AC9CE] rounded-full flex items-center justify-center text-white text-6xl font-black shadow-2xl">
+          Q
+         </div><button onclick="uploadPhoto()" class="absolute bottom-0 right-0 w-12 h-12 bg-[#0A2540] rounded-full flex items-center justify-center hover:bg-[#0d3054] transition-all duration-300 shadow-xl group-hover:scale-110">
+          <svg class="w-6 h-6 text-white" fill="currentColor" viewbox="0 0 20 20"><path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" />
+          </svg></button>
+        </div>
+        <div class="flex-1">
+         <h3 class="text-3xl font-black text-[#0A2540] mb-3">Qurbanali Feyzullayev</h3>
+         <p class="text-xl text-gray-600 mb-6 font-semibold">BSc Biology • 3.8 GPA</p>
+         <div class="space-y-3">
+          <div class="flex items-center space-x-3 text-gray-600 font-semibold">
+           <svg class="w-5 h-5" fill="currentColor" viewbox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+           </svg><span>qurbanali.f@example.com</span>
+          </div>
+          <div class="flex items-center space-x-3 text-gray-600 font-semibold">
+           <svg class="w-5 h-5" fill="currentColor" viewbox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+           </svg><span>+1 (555) 123-4567</span>
+          </div>
+          <div class="flex items-center space-x-3 text-gray-600 font-semibold">
+           <svg class="w-5 h-5" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+           </svg><span>San Francisco, California</span>
+          </div>
+         </div>
+        </div>
+        <div class="flex flex-col items-center">
+         <svg class="w-28 h-28" viewbox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="#E5E7EB" stroke-width="8" /> <circle cx="50" cy="50" r="40" fill="none" stroke="#5CE1E6" stroke-width="8" stroke-dasharray="251.2" stroke-dashoffset="37.68" class="progress-ring transform -rotate-90" style="transform-origin: center;" />
+         </svg>
+         <p class="text-3xl font-black text-[#0A2540] mt-3">85%</p>
+         <p class="text-sm text-gray-600 font-bold">Complete</p><button onclick="navigateToPage('dashboard')" class="mt-3 text-xs text-[#5CE1E6] font-black hover:text-[#4AC9CE] transition flex items-center gap-1"> <span>Complete Now</span>
+          <svg class="w-3 h-3" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+          </svg></button>
+        </div>
+       </div>
+      </div><!-- Account Settings -->
+      <div class="bg-white rounded-3xl p-10 shadow-lg animate-slide-in-left stagger-1">
+       <h2 class="text-3xl font-black text-[#0A2540] mb-8">Account Settings</h2>
+       <div class="space-y-5">
+        <div class="flex items-center justify-between p-6 bg-[#F8F9FC] rounded-2xl card-hover">
+         <div class="flex items-center space-x-5">
+          <div class="w-14 h-14 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl flex items-center justify-center shadow-lg">
+           <svg class="w-7 h-7 text-blue-600" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+           </svg>
+          </div>
+          <div>
+           <p class="font-black text-[#0A2540]">Change Password</p>
+           <p class="text-sm text-gray-600 font-semibold">Last changed 3 months ago</p>
+          </div>
+         </div><button onclick="changePassword()" class="btn-primary px-5 py-3 rounded-xl font-black text-sm ripple">Update</button>
+        </div>
+        <div class="flex items-center justify-between p-6 bg-[#F8F9FC] rounded-2xl">
+         <div class="flex items-center space-x-5">
+          <div class="w-14 h-14 bg-gradient-to-br from-green-100 to-green-200 rounded-2xl flex items-center justify-center shadow-lg">
+           <svg class="w-7 h-7 text-green-600" fill="currentColor" viewbox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+           </svg>
+          </div>
+          <div>
+           <p class="font-black text-[#0A2540]">Email Notifications</p>
+           <p class="text-sm text-gray-600 font-semibold">Receive updates about applications</p>
+          </div>
+         </div><input type="checkbox" class="toggle-checkbox" checked>
+        </div>
+        <div class="flex items-center justify-between p-6 bg-[#F8F9FC] rounded-2xl">
+         <div class="flex items-center space-x-5">
+          <div class="w-14 h-14 bg-gradient-to-br from-purple-100 to-purple-200 rounded-2xl flex items-center justify-center shadow-lg">
+           <svg class="w-7 h-7 text-purple-600" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M18 3a1 1 0 00-1.447-.894L8.763 6H5a3 3 0 000 6h.28l1.771 5.316A1 1 0 008 18h1a1 1 0 001-1v-4.382l6.553 3.276A1 1 0 0018 15V3z" clip-rule="evenodd" />
+           </svg>
+          </div>
+          <div>
+           <p class="font-black text-[#0A2540]">Push Notifications</p>
+           <p class="text-sm text-gray-600 font-semibold">Get deadline reminders on your device</p>
+          </div>
+         </div><input type="checkbox" class="toggle-checkbox" checked>
+        </div>
+        <div class="flex items-center justify-between p-6 bg-[#F8F9FC] rounded-2xl">
+         <div class="flex items-center space-x-5">
+          <div class="w-14 h-14 bg-gradient-to-br from-cyan-100 to-cyan-200 rounded-2xl flex items-center justify-center shadow-lg">
+           <svg class="w-7 h-7 text-cyan-600" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+           </svg>
+          </div>
+          <div>
+           <p class="font-black text-[#0A2540]">Two-Factor Authentication</p>
+           <p class="text-sm text-gray-600 font-semibold">Add extra security to your account</p>
+          </div>
+         </div><input type="checkbox" class="toggle-checkbox">
+        </div>
+       </div>
+      </div><!-- AI Preferences -->
+      <div class="bg-gradient-to-r from-cyan-50 to-blue-50 rounded-3xl p-10 border-2 border-[#5CE1E6] animate-slide-in-left stagger-2">
+       <div class="flex items-center space-x-4 mb-8">
+        <div class="w-14 h-14 bg-[#5CE1E6] rounded-2xl flex items-center justify-center shadow-xl">
+         <svg class="w-7 h-7 text-[#0A2540]" fill="currentColor" viewbox="0 0 20 20"><path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3z" />
+         </svg>
+        </div>
+        <h2 class="text-3xl font-black text-[#0A2540]">AI Preferences</h2>
+       </div>
+       <div class="space-y-5">
+        <div class="bg-white rounded-2xl p-6">
+         <div class="flex items-center justify-between">
+          <div class="flex-1">
+           <p class="font-black text-[#0A2540] mb-1">AI Program Matching</p>
+           <p class="text-sm text-gray-600 font-semibold">Get personalized program recommendations</p>
+          </div><input type="checkbox" class="toggle-checkbox" checked>
+         </div>
+        </div>
+        <div class="bg-white rounded-2xl p-6">
+         <div class="flex items-center justify-between">
+          <div class="flex-1">
+           <p class="font-black text-[#0A2540] mb-1">Scholarship Suggestions</p>
+           <p class="text-sm text-gray-600 font-semibold">AI-powered funding opportunities</p>
+          </div><input type="checkbox" class="toggle-checkbox" checked>
+         </div>
+        </div>
+        <div class="bg-white rounded-2xl p-6">
+         <div class="flex items-center justify-between">
+          <div class="flex-1">
+           <p class="font-black text-[#0A2540] mb-1">Deadline Reminders</p>
+           <p class="text-sm text-gray-600 font-semibold">Smart deadline notifications and alerts</p>
+          </div><input type="checkbox" class="toggle-checkbox" checked>
+         </div>
+        </div>
+        <div class="bg-white rounded-2xl p-6">
+         <div class="flex items-center justify-between">
+          <div class="flex-1">
+           <p class="font-black text-[#0A2540] mb-1">Document Analysis</p>
+           <p class="text-sm text-gray-600 font-semibold">Automatic document quality checks</p>
+          </div><input type="checkbox" class="toggle-checkbox" checked>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div><!-- Right Sidebar -->
+     <div class="lg:col-span-1 animate-slide-in-right">
+      <div class="bg-white rounded-3xl p-8 shadow-lg sticky top-24">
+       <h3 class="text-2xl font-black text-[#0A2540] mb-8">Quick Actions</h3>
+       <div class="space-y-4"><button onclick="editProfile()" class="w-full flex items-center space-x-4 p-5 bg-gradient-to-r from-[#5CE1E6] to-[#4AC9CE] rounded-2xl hover:shadow-xl transition-all duration-300 text-left ripple">
+         <svg class="w-7 h-7 text-[#0A2540]" fill="currentColor" viewbox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793z" />
+         </svg><span class="font-black text-[#0A2540]">Edit Profile</span> </button> <button onclick="navigateToPage('upload')" class="w-full flex items-center space-x-4 p-5 bg-[#F8F9FC] rounded-2xl hover:bg-gray-200 transition-all duration-300 text-left card-hover">
+         <svg class="w-7 h-7 text-[#0A2540]" fill="currentColor" viewbox="0 0 20 20"><path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z" />
+         </svg><span class="font-black text-[#0A2540]">Upload Documents</span> </button> <button onclick="navigateToPage('programs')" class="w-full flex items-center space-x-4 p-5 bg-[#F8F9FC] rounded-2xl hover:bg-gray-200 transition-all duration-300 text-left card-hover">
+         <svg class="w-7 h-7 text-[#0A2540]" fill="currentColor" viewbox="0 0 20 20"><path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3z" />
+         </svg><span class="font-black text-[#0A2540]">View Recommendations</span> </button> <button onclick="navigateToPage('applications')" class="w-full flex items-center space-x-4 p-5 bg-gradient-to-br from-[#0A2540] to-[#1a4568] rounded-2xl hover:shadow-xl transition-all duration-300 text-left ripple">
+         <svg class="w-7 h-7 text-white" fill="currentColor" viewbox="0 0 20 20"><path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L14 2.586A2 2 0 0012.586 2H9z" />
+         </svg><span class="font-black text-white">Track Applications</span> </button>
+       </div><!-- AI Tip -->
+       <div class="mt-8 p-5 bg-gradient-to-br from-cyan-50 to-blue-50 rounded-2xl border-2 border-[#5CE1E6]">
+        <div class="flex items-start space-x-3">
+         <svg class="w-6 h-6 text-[#5CE1E6] flex-shrink-0 mt-0.5" fill="currentColor" viewbox="0 0 20 20"><path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3z" />
+         </svg>
+         <div>
+          <p class="font-black text-[#0A2540] text-xs mb-2">💡 AI Tip</p>
+          <p class="text-xs text-gray-700 font-semibold leading-relaxed">Completing your profile increases match accuracy by 40%!</p>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </section>
+   <footer class="bg-white py-10 border-t-2 border-gray-200 mt-16">
+    <div class="max-w-7xl mx-auto px-6 text-center">
+     <p class="text-gray-600 text-sm font-bold">© 2024 NoApplAI. All rights reserved.</p>
+    </div>
+   </footer>
+  </div>
+  <script>
+    // ==================== STATE MANAGEMENT ====================
+    let currentPage = 'landing';
+    let activeFilters = [];
+    
+    // Sample data structures
+    const programs = [
+      {
+        id: 1,
+        name: 'Harvard University',
+        program: 'MSc Computer Science',
+        logo: 'H',
+        color: 'from-red-600 to-red-700',
+        match: 92,
+        location: 'USA',
+        tags: ['Scholarships', 'Fast Decision'],
+        deadline: 'Jan 15, 2024',
+        fee: '$75'
+      },
+      {
+        id: 2,
+        name: 'Stanford University',
+        program: 'MBA Program',
+        logo: 'S',
+        color: 'from-red-700 to-red-800',
+        match: 88,
+        location: 'USA',
+        tags: ['High Acceptance'],
+        deadline: 'Feb 1, 2024',
+        fee: '$100'
+      },
+      {
+        id: 3,
+        name: 'MIT',
+        program: 'MSc Engineering',
+        logo: 'M',
+        color: 'from-gray-800 to-black',
+        match: 85,
+        location: 'USA',
+        tags: ['Scholarships'],
+        deadline: 'Jan 5, 2024',
+        fee: '$85'
+      },
+      {
+        id: 4,
+        name: 'Oxford University',
+        program: 'MSc Mathematics',
+        logo: 'O',
+        color: 'from-blue-900 to-blue-950',
+        match: 82,
+        location: 'UK',
+        tags: ['Scholarships'],
+        deadline: 'Jan 20, 2024',
+        fee: '£75'
+      },
+      {
+        id: 5,
+        name: 'Cambridge',
+        program: 'MSc Artificial Intelligence',
+        logo: 'C',
+        color: 'from-blue-800 to-blue-900',
+        match: 78,
+        location: 'UK',
+        tags: ['Fast Decision'],
+        deadline: 'Feb 10, 2024',
+        fee: '£80'
+      },
+      {
+        id: 6,
+        name: 'Imperial College',
+        program: 'MSc Data Science',
+        logo: 'I',
+        color: 'from-purple-700 to-purple-800',
+        match: 75,
+        location: 'UK',
+        tags: ['No Fee'],
+        deadline: 'Jan 31, 2024',
+        fee: 'Free'
+      }
+    ];
+    
+    const documents = [
+      { id: 1, name: 'CV / Resume', filename: 'CV_Qurbanali.pdf', size: '2.4 MB', status: 'uploaded' },
+      { id: 2, name: 'Academic Transcript', filename: 'Transcript_2023.pdf', size: '1.8 MB', status: 'uploaded' },
+      { id: 3, name: 'Passport / ID', filename: 'Passport.jpg', size: '1.2 MB', status: 'uploaded' },
+      { id: 4, name: 'English Test Certificate', filename: '', size: '', status: 'missing', required: 'TOEFL / IELTS' }
+    ];
+    
+    const applications = [
+      {
+        id: 1,
+        university: 'Harvard University',
+        program: 'MSc Computer Science',
+        logo: 'H',
+        color: 'from-red-600 to-red-700',
+        status: 'submitted',
+        deadline: 'Jan 15, 2024',
+        submittedDate: 'Dec 20, 2023',
+        applicationId: 'HAR-2024-001',
+        action: null
+      },
+      {
+        id: 2,
+        university: 'Stanford University',
+        program: 'MBA Program',
+        logo: 'S',
+        color: 'from-red-700 to-red-800',
+        status: 'review',
+        deadline: 'Feb 1, 2024',
+        submittedDate: null,
+        applicationId: 'STA-2024-045',
+        action: 'Upload English test certificate',
+        daysLeft: 3
+      },
+      {
+        id: 3,
+        university: 'Imperial College London',
+        program: 'MSc Data Science',
+        logo: 'I',
+        color: 'from-purple-700 to-purple-800',
+        status: 'offer',
+        deadline: 'Jan 20, 2024',
+        submittedDate: 'Nov 15, 2023',
+        applicationId: 'IMP-2024-112',
+        action: 'Accept or decline offer',
+        daysLeft: 7
+      },
+      {
+        id: 4,
+        university: 'MIT',
+        program: 'MSc Engineering',
+        logo: 'M',
+        color: 'from-gray-800 to-black',
+        status: 'submitted',
+        deadline: 'Jan 5, 2024',
+        submittedDate: 'Dec 15, 2023',
+        applicationId: 'MIT-2024-089',
+        action: null
+      }
+    ];
+    
+    // ==================== NOTIFICATIONS ====================
+    let notifications = [
+      { id: 1, title: 'Deadline approaching', message: 'Stanford MBA application due in 3 days', time: '2 hours ago', unread: true },
+      { id: 2, title: 'New AI match', message: 'Harvard MSc CS - 92% match for your profile', time: '5 hours ago', unread: true },
+      { id: 3, title: 'Document verified', message: 'Your transcript has been verified successfully', time: '1 day ago', unread: false },
+      { id: 4, title: 'Offer received', message: 'Imperial College sent you an offer!', time: '2 days ago', unread: false }
+    ];
+    
+    function toggleNotifications() {
+      const dropdown = document.getElementById('notifications-dropdown');
+      dropdown.classList.toggle('show');
+      
+      if (dropdown.classList.contains('show')) {
+        renderNotifications();
+      }
+    }
+    
+    function renderNotifications() {
+      const container = document.getElementById('notifications-list');
+      container.innerHTML = notifications.map(notif => `
+        <div class="notification-item ${notif.unread ? 'unread' : ''} p-5 border-b border-gray-100" onclick="markAsRead(${notif.id})">
+          <div class="flex items-start justify-between">
+            <div class="flex-1">
+              <p class="font-black text-[#0A2540] text-sm mb-1">${notif.title}</p>
+              <p class="text-xs text-gray-600 mb-2 font-semibold">${notif.message}</p>
+              <p class="text-xs text-gray-400 font-semibold">${notif.time}</p>
+            </div>
+            ${notif.unread ? '<div class="w-2 h-2 bg-[#5CE1E6] rounded-full ml-2 mt-1"></div>' : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    function markAsRead(id) {
+      notifications = notifications.map(n => n.id === id ? {...n, unread: false} : n);
+      renderNotifications();
+      updateNotificationBadge();
+    }
+    
+    function markAllAsRead() {
+      notifications = notifications.map(n => ({...n, unread: false}));
+      renderNotifications();
+      updateNotificationBadge();
+      showToast('All notifications marked as read', 'success');
+    }
+    
+    function updateNotificationBadge() {
+      const badge = document.getElementById('notification-badge');
+      const unreadCount = notifications.filter(n => n.unread).length;
+      badge.style.display = unreadCount > 0 ? 'block' : 'none';
+    }
+    
+    // ==================== TOAST NOTIFICATIONS ====================
+    function show</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a29f6f4d59db811',t:'MTc2MzgzMDYzNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
