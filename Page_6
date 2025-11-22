@@ -1,0 +1,584 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Profile - NoApplAI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Montserrat:wght@700;800&amp;display=swap" rel="stylesheet">
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+    h1, h2, h3, h4 {
+      font-family: 'Montserrat', sans-serif;
+    }
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+    .toggle-checkbox:checked {
+      background-color: #5CE1E6;
+      border-color: #5CE1E6;
+    }
+    .toggle-checkbox {
+      appearance: none;
+      width: 48px;
+      height: 24px;
+      background-color: #E5E7EB;
+      border-radius: 24px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .toggle-checkbox::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background-color: white;
+      top: 2px;
+      left: 2px;
+      transition: all 0.3s;
+    }
+    .toggle-checkbox:checked::after {
+      left: 26px;
+    }
+    .progress-ring {
+      transform: rotate(-90deg);
+    }
+    .collapsible-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    .collapsible-content.active {
+      max-height: 500px;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="bg-[#F8F9FC]"><!-- Header -->
+  <header class="bg-white sticky top-0 z-50 shadow-sm">
+   <nav class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <div class="flex items-center space-x-8">
+     <div class="flex items-center space-x-2">
+      <svg class="w-8 h-8" viewbox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="8" fill="#0A2540" /> <path d="M20 10L28 16V24L20 30L12 24V16L20 10Z" fill="#5CE1E6" /> <circle cx="20" cy="20" r="4" fill="white" />
+      </svg><span class="text-2xl font-bold text-[#0A2540]">NoApplAI</span>
+     </div>
+     <div class="hidden md:flex items-center space-x-6"><a href="#" class="text-gray-600 hover:text-[#0A2540] transition font-medium">Dashboard</a> <a href="#" class="text-gray-600 hover:text-[#0A2540] transition font-medium">Programs</a> <a href="#" class="text-gray-600 hover:text-[#0A2540] transition font-medium">Upload</a> <a href="#" class="text-gray-600 hover:text-[#0A2540] transition font-medium">Applications</a> <a href="#" class="text-[#0A2540] font-semibold border-b-2 border-[#5CE1E6] pb-1">Profile</a>
+     </div>
+    </div>
+    <div class="flex items-center space-x-4"><button class="relative p-2 hover:bg-[#F8F9FC] rounded-lg transition">
+      <svg class="w-6 h-6 text-[#0A2540]" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+      </svg><span class="absolute top-1 right-1 w-2 h-2 bg-[#5CE1E6] rounded-full"></span> </button> <button class="p-2 hover:bg-[#F8F9FC] rounded-lg transition">
+      <svg class="w-6 h-6 text-[#0A2540]" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg></button>
+     <div class="flex items-center space-x-3 pl-3 border-l border-gray-200">
+      <div class="w-10 h-10 bg-[#5CE1E6] rounded-full flex items-center justify-center text-[#0A2540] font-bold"><span>Q</span>
+      </div>
+     </div>
+    </div>
+   </nav>
+  </header><!-- Page Header -->
+  <section class="max-w-7xl mx-auto px-6 py-8">
+   <h1 id="page-title" class="text-4xl font-bold text-[#0A2540] mb-2">Your Profile</h1>
+   <p id="page-subtitle" class="text-lg text-gray-600">Manage your personal information, account settings, and AI preferences.</p>
+  </section>
+  <div class="max-w-7xl mx-auto px-6 pb-12">
+   <div class="grid lg:grid-cols-3 gap-6"><!-- Left Column - Main Content -->
+    <div class="lg:col-span-2 space-y-6"><!-- User Profile Card -->
+     <div class="bg-white rounded-2xl p-8 shadow-md card-hover">
+      <div class="flex items-start justify-between mb-6">
+       <h2 class="text-2xl font-bold text-[#0A2540]">Profile Information</h2><button class="flex items-center space-x-2 bg-[#5CE1E6] text-[#0A2540] px-4 py-2 rounded-lg font-semibold hover:bg-[#4AC9CE] transition">
+        <svg class="w-4 h-4" fill="currentColor" viewbox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+        </svg><span>Edit Profile</span> </button>
+      </div>
+      <div class="flex flex-col md:flex-row items-start md:items-center gap-6"><!-- Avatar -->
+       <div class="relative">
+        <div class="w-32 h-32 bg-gradient-to-br from-[#5CE1E6] to-[#0A2540] rounded-full flex items-center justify-center text-white text-5xl font-bold shadow-lg">
+         Q
+        </div><button class="absolute bottom-0 right-0 w-10 h-10 bg-[#0A2540] rounded-full flex items-center justify-center hover:bg-[#0d3054] transition shadow-md">
+         <svg class="w-5 h-5 text-white" fill="currentColor" viewbox="0 0 20 20"><path d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" />
+         </svg></button>
+       </div><!-- User Info -->
+       <div class="flex-1">
+        <h3 id="user-name" class="text-2xl font-bold text-[#0A2540] mb-2">Qurbanali Feyzullayev</h3>
+        <p id="user-level" class="text-lg text-gray-600 mb-4">BSc Biology</p>
+        <div class="space-y-2">
+         <div class="flex items-center space-x-3 text-gray-600">
+          <svg class="w-5 h-5" fill="currentColor" viewbox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" /> <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+          </svg><span id="user-email">qurbanali.f@example.com</span>
+         </div>
+         <div class="flex items-center space-x-3 text-gray-600">
+          <svg class="w-5 h-5" fill="currentColor" viewbox="0 0 20 20"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+          </svg><span id="user-phone">+1 (555) 123-4567</span>
+         </div>
+        </div>
+       </div><!-- Profile Completion -->
+       <div class="flex flex-col items-center">
+        <svg class="w-24 h-24" viewbox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="#E5E7EB" stroke-width="8" /> <circle cx="50" cy="50" r="40" fill="none" stroke="#5CE1E6" stroke-width="8" stroke-dasharray="251.2" stroke-dashoffset="37.68" class="progress-ring" />
+        </svg>
+        <p class="text-2xl font-bold text-[#0A2540] mt-2">85%</p>
+        <p class="text-sm text-gray-600">Complete</p>
+       </div>
+      </div>
+     </div><!-- Account Settings Card -->
+     <div class="bg-white rounded-2xl p-8 shadow-md">
+      <h2 id="account-settings-title" class="text-2xl font-bold text-[#0A2540] mb-6">Account Settings</h2>
+      <div class="space-y-4"><!-- Password -->
+       <div class="flex items-center justify-between p-4 bg-[#F8F9FC] rounded-xl card-hover">
+        <div class="flex items-center space-x-4">
+         <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+          <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+          </svg>
+         </div>
+         <div>
+          <p class="font-semibold text-[#0A2540]">Change Password</p>
+          <p class="text-sm text-gray-600">Last changed 3 months ago</p>
+         </div>
+        </div><button class="bg-[#0A2540] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#0d3054] transition text-sm"> Update </button>
+       </div><!-- Email Notifications -->
+       <div class="flex items-center justify-between p-4 bg-[#F8F9FC] rounded-xl card-hover">
+        <div class="flex items-center space-x-4">
+         <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+          <svg class="w-6 h-6 text-green-600" fill="currentColor" viewbox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" /> <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+          </svg>
+         </div>
+         <div>
+          <p class="font-semibold text-[#0A2540]">Email Notifications</p>
+          <p class="text-sm text-gray-600">Receive updates about applications</p>
+         </div>
+        </div><input type="checkbox" class="toggle-checkbox" checked>
+       </div><!-- Language -->
+       <div class="flex items-center justify-between p-4 bg-[#F8F9FC] rounded-xl card-hover">
+        <div class="flex items-center space-x-4">
+         <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+          <svg class="w-6 h-6 text-purple-600" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 5.73 6.974 6 7.5 6A1.5 1.5 0 019 7.5V8a2 2 0 004 0 2 2 0 011.523-1.943A5.977 5.977 0 0116 10c0 .34-.028.675-.083 1H15a2 2 0 00-2 2v2.197A5.973 5.973 0 0110 16v-2a2 2 0 00-2-2 2 2 0 01-2-2 2 2 0 00-1.668-1.973z" clip-rule="evenodd" />
+          </svg>
+         </div>
+         <div>
+          <p class="font-semibold text-[#0A2540]">Language</p>
+          <p class="text-sm text-gray-600">Choose your preferred language</p>
+         </div>
+        </div><select class="bg-white border-2 border-gray-200 px-4 py-2 rounded-lg font-semibold text-[#0A2540] hover:border-[#5CE1E6] transition"> <option>English</option> <option>Spanish</option> <option>French</option> <option>German</option> </select>
+       </div><!-- Two-Factor Authentication -->
+       <div class="flex items-center justify-between p-4 bg-[#F8F9FC] rounded-xl card-hover">
+        <div class="flex items-center space-x-4">
+         <div class="w-12 h-12 bg-cyan-100 rounded-lg flex items-center justify-center">
+          <svg class="w-6 h-6 text-cyan-600" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+          </svg>
+         </div>
+         <div>
+          <p class="font-semibold text-[#0A2540]">Two-Factor Authentication</p>
+          <p class="text-sm text-gray-600">Add extra security to your account</p>
+         </div>
+        </div><input type="checkbox" class="toggle-checkbox">
+       </div>
+      </div>
+     </div><!-- Documents Section -->
+     <div class="bg-white rounded-2xl p-8 shadow-md">
+      <h2 id="documents-title" class="text-2xl font-bold text-[#0A2540] mb-6">Your Uploaded Documents</h2>
+      <div class="grid md:grid-cols-2 gap-4"><!-- Document 1 - Uploaded -->
+       <div class="p-4 bg-[#F8F9FC] rounded-xl border-2 border-green-200 card-hover">
+        <div class="flex items-start justify-between mb-3">
+         <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+           <svg class="w-5 h-5 text-green-600" fill="currentColor" viewbox="0 0 20 20"><path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L14 2.586A2 2 0 0012.586 2H9z" />
+           </svg>
+          </div>
+          <div>
+           <p class="font-semibold text-[#0A2540]">Curriculum Vitae</p>
+           <p class="text-xs text-gray-600">CV_John.pdf</p>
+          </div>
+         </div><span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-semibold">✓ Uploaded</span>
+        </div>
+        <div class="flex gap-2"><button class="flex-1 bg-white text-[#0A2540] py-2 px-3 rounded-lg font-semibold hover:bg-gray-100 transition text-xs">View</button> <button class="flex-1 bg-[#5CE1E6] text-[#0A2540] py-2 px-3 rounded-lg font-semibold hover:bg-[#4AC9CE] transition text-xs">Replace</button>
+        </div>
+       </div><!-- Document 2 - Uploaded -->
+       <div class="p-4 bg-[#F8F9FC] rounded-xl border-2 border-green-200 card-hover">
+        <div class="flex items-start justify-between mb-3">
+         <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+           <svg class="w-5 h-5 text-green-600" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd" />
+           </svg>
+          </div>
+          <div>
+           <p class="font-semibold text-[#0A2540]">Academic Transcript</p>
+           <p class="text-xs text-gray-600">Transcript.pdf</p>
+          </div>
+         </div><span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-semibold">✓ Uploaded</span>
+        </div>
+        <div class="flex gap-2"><button class="flex-1 bg-white text-[#0A2540] py-2 px-3 rounded-lg font-semibold hover:bg-gray-100 transition text-xs">View</button> <button class="flex-1 bg-[#5CE1E6] text-[#0A2540] py-2 px-3 rounded-lg font-semibold hover:bg-[#4AC9CE] transition text-xs">Replace</button>
+        </div>
+       </div><!-- Document 3 - Missing -->
+       <div class="p-4 bg-[#F8F9FC] rounded-xl border-2 border-yellow-200 card-hover">
+        <div class="flex items-start justify-between mb-3">
+         <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+           <svg class="w-5 h-5 text-yellow-600" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+           </svg>
+          </div>
+          <div>
+           <p class="font-semibold text-[#0A2540]">English Test</p>
+           <p class="text-xs text-gray-600">IELTS/TOEFL</p>
+          </div>
+         </div><span class="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full font-semibold">⚠ Missing</span>
+        </div><button class="w-full bg-[#0A2540] text-white py-2 px-3 rounded-lg font-semibold hover:bg-[#0d3054] transition text-xs">Upload Now</button>
+       </div><!-- Document 4 - Uploaded -->
+       <div class="p-4 bg-[#F8F9FC] rounded-xl border-2 border-green-200 card-hover">
+        <div class="flex items-start justify-between mb-3">
+         <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+           <svg class="w-5 h-5 text-green-600" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+           </svg>
+          </div>
+          <div>
+           <p class="font-semibold text-[#0A2540]">Passport Copy</p>
+           <p class="text-xs text-gray-600">Passport.jpg</p>
+          </div>
+         </div><span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-semibold">✓ Uploaded</span>
+        </div>
+        <div class="flex gap-2"><button class="flex-1 bg-white text-[#0A2540] py-2 px-3 rounded-lg font-semibold hover:bg-gray-100 transition text-xs">View</button> <button class="flex-1 bg-[#5CE1E6] text-[#0A2540] py-2 px-3 rounded-lg font-semibold hover:bg-[#4AC9CE] transition text-xs">Replace</button>
+        </div>
+       </div>
+      </div>
+      <div class="mt-6 p-4 bg-gradient-to-r from-cyan-50 to-blue-50 rounded-xl border-2 border-[#5CE1E6]">
+       <div class="flex items-start space-x-3">
+        <svg class="w-6 h-6 text-[#5CE1E6] flex-shrink-0" fill="currentColor" viewbox="0 0 20 20"><path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.476.859h4.002z" />
+        </svg>
+        <div>
+         <p class="font-bold text-[#0A2540] mb-1">AI Recommendation</p>
+         <p class="text-sm text-gray-700">Upload your English test certificate to increase your application match rate by 25%.</p>
+        </div>
+       </div>
+      </div>
+     </div><!-- AI Preferences -->
+     <div class="bg-gradient-to-r from-cyan-50 to-blue-50 rounded-2xl p-8 shadow-md border-2 border-[#5CE1E6]">
+      <div class="flex items-center space-x-3 mb-6">
+       <div class="w-12 h-12 bg-[#5CE1E6] rounded-full flex items-center justify-center">
+        <svg class="w-6 h-6 text-[#0A2540]" fill="currentColor" viewbox="0 0 20 20"><path d="M13 7H7v6h6V7z" /> <path fill-rule="evenodd" d="M7 2a1 1 0 012 0v1h2V2a1 1 0 112 0v1h2a2 2 0 012 2v2h1a1 1 0 110 2h-1v2h1a1 1 0 110 2h-1v2a2 2 0 01-2 2h-2v1a1 1 0 11-2 0v-1H9v1a1 1 0 11-2 0v-1H5a2 2 0 01-2-2v-2H2a1 1 0 110-2h1V9H2a1 1 0 010-2h1V5a2 2 0 012-2h2V2zM5 5h10v10H5V5z" clip-rule="evenodd" />
+        </svg>
+       </div>
+       <h2 id="ai-preferences-title" class="text-2xl font-bold text-[#0A2540]">AI &amp; Recommendations Settings</h2>
+      </div>
+      <div class="space-y-4">
+       <div class="bg-white rounded-xl p-5">
+        <div class="flex items-center justify-between">
+         <div class="flex-1">
+          <p class="font-bold text-[#0A2540] mb-1">AI Program Matching</p>
+          <p class="text-sm text-gray-600">Get personalized university and program recommendations</p>
+         </div><input type="checkbox" class="toggle-checkbox" checked>
+        </div>
+       </div>
+       <div class="bg-white rounded-xl p-5">
+        <div class="flex items-center justify-between">
+         <div class="flex-1">
+          <p class="font-bold text-[#0A2540] mb-1">Scholarship Suggestions</p>
+          <p class="text-sm text-gray-600">Receive AI-powered scholarship and funding opportunities</p>
+         </div><input type="checkbox" class="toggle-checkbox" checked>
+        </div>
+       </div>
+       <div class="bg-white rounded-xl p-5">
+        <div class="flex items-center justify-between">
+         <div class="flex-1">
+          <p class="font-bold text-[#0A2540] mb-1">Deadline Reminders</p>
+          <p class="text-sm text-gray-600">Get smart reminders about upcoming application deadlines</p>
+         </div><input type="checkbox" class="toggle-checkbox" checked>
+        </div>
+       </div>
+      </div>
+     </div><!-- Privacy & Data Management -->
+     <div class="bg-white rounded-2xl p-8 shadow-md"><button onclick="togglePrivacy()" class="w-full flex items-center justify-between mb-4"> <h2 id="privacy-title" class="text-2xl font-bold text-[#0A2540]">Privacy &amp; Data Management</h2>
+       <svg id="privacy-arrow" class="w-6 h-6 text-[#0A2540] transition-transform" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+       </svg></button>
+      <div id="privacy-content" class="collapsible-content space-y-4">
+       <div class="p-4 bg-blue-50 rounded-xl border-l-4 border-blue-400">
+        <p class="text-sm text-gray-700"><strong>GDPR Compliant:</strong> Your data is protected under GDPR regulations. We never share your personal information without explicit consent.</p>
+       </div>
+       <div class="flex items-center justify-between p-4 bg-[#F8F9FC] rounded-xl">
+        <div class="flex items-center space-x-4">
+         <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+         </svg>
+         <div>
+          <p class="font-semibold text-[#0A2540]">Download Your Data</p>
+          <p class="text-sm text-gray-600">Export all your information</p>
+         </div>
+        </div><button class="bg-[#0A2540] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#0d3054] transition text-sm"> Download </button>
+       </div>
+       <div class="flex items-center justify-between p-4 bg-red-50 rounded-xl border-2 border-red-200">
+        <div class="flex items-center space-x-4">
+         <svg class="w-6 h-6 text-red-600" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+         </svg>
+         <div>
+          <p class="font-semibold text-red-900">Delete Account</p>
+          <p class="text-sm text-red-700">Permanently remove all your data</p>
+         </div>
+        </div><button class="bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition text-sm"> Delete </button>
+       </div>
+      </div>
+     </div>
+    </div><!-- Right Column - Quick Actions Sidebar -->
+    <div class="lg:col-span-1">
+     <div class="bg-white rounded-2xl p-6 shadow-md sticky top-24">
+      <h3 class="text-xl font-bold text-[#0A2540] mb-6">Quick Actions</h3>
+      <div class="space-y-3"><button class="w-full flex items-center space-x-3 p-4 bg-gradient-to-r from-[#5CE1E6] to-[#4AC9CE] rounded-xl hover:shadow-lg transition text-left">
+        <svg class="w-6 h-6 text-[#0A2540]" fill="currentColor" viewbox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+        </svg><span class="font-semibold text-[#0A2540]">Edit Profile</span> </button> <button class="w-full flex items-center space-x-3 p-4 bg-[#F8F9FC] rounded-xl hover:bg-gray-200 transition text-left">
+        <svg class="w-6 h-6 text-[#0A2540]" fill="currentColor" viewbox="0 0 20 20"><path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z" /> <path d="M9 13h2v5a1 1 0 11-2 0v-5z" />
+        </svg><span class="font-semibold text-[#0A2540]">Upload Documents</span> </button> <button class="w-full flex items-center space-x-3 p-4 bg-[#F8F9FC] rounded-xl hover:bg-gray-200 transition text-left">
+        <svg class="w-6 h-6 text-[#0A2540]" fill="currentColor" viewbox="0 0 20 20"><path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.476.859h4.002z" />
+        </svg><span class="font-semibold text-[#0A2540]">View AI Recommendations</span> </button> <button class="w-full flex items-center space-x-3 p-4 bg-[#0A2540] rounded-xl hover:bg-[#0d3054] transition text-left">
+        <svg class="w-6 h-6 text-white" fill="currentColor" viewbox="0 0 20 20"><path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L14 2.586A2 2 0 0012.586 2H9z" /> <path d="M3 8a2 2 0 012-2v10h8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z" />
+        </svg><span class="font-semibold text-white">Go to Applications</span> </button>
+      </div>
+      <div class="mt-6 p-4 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl border-2 border-[#5CE1E6]">
+       <div class="flex items-start space-x-3">
+        <svg class="w-5 h-5 text-[#5CE1E6] flex-shrink-0 mt-0.5" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+        </svg>
+        <div>
+         <p class="font-bold text-[#0A2540] text-sm mb-1">Need Help?</p>
+         <p class="text-xs text-gray-600 mb-3">Contact our support team anytime</p><button class="text-xs bg-[#5CE1E6] text-[#0A2540] px-3 py-1.5 rounded-lg font-semibold hover:bg-[#4AC9CE] transition"> Get Support </button>
+        </div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div><!-- Footer -->
+  <footer class="bg-white py-8 border-t border-gray-200">
+   <div class="max-w-7xl mx-auto px-6 text-center">
+    <p id="footer-text" class="text-gray-600 text-sm">NoApplAI — Smarter academic application journeys powered by AI.</p>
+    <div class="flex justify-center space-x-6 mt-4 text-sm text-gray-500"><a href="#" class="hover:text-[#5CE1E6] transition">Privacy Policy</a> <span>•</span> <a href="#" class="hover:text-[#5CE1E6] transition">Terms of Service</a> <span>•</span> <a href="#" class="hover:text-[#5CE1E6] transition">Support</a>
+    </div>
+   </div>
+  </footer>
+  <script>
+    function togglePrivacy() {
+      const content = document.getElementById('privacy-content');
+      const arrow = document.getElementById('privacy-arrow');
+      content.classList.toggle('active');
+      arrow.style.transform = content.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
+    }
+
+    const defaultConfig = {
+      background_color: '#F8F9FC',
+      surface_color: '#FFFFFF',
+      text_color: '#0A2540',
+      primary_action_color: '#0A2540',
+      secondary_action_color: '#5CE1E6',
+      font_family: 'Inter',
+      font_size: 16,
+      page_title: 'Your Profile',
+      page_subtitle: 'Manage your personal information, account settings, and AI preferences.',
+      user_name: 'Qurbanali Feyzullayev',
+      user_level: 'BSc Biology',
+      user_email: 'qurbanali.f@example.com',
+      user_phone: '+1 (555) 123-4567',
+      account_settings_title: 'Account Settings',
+      documents_title: 'Your Uploaded Documents',
+      ai_preferences_title: 'AI & Recommendations Settings',
+      privacy_title: 'Privacy & Data Management',
+      footer_text: 'NoApplAI — Smarter academic application journeys powered by AI.'
+    };
+
+    let config = { ...defaultConfig };
+
+    async function onConfigChange(newConfig) {
+      config = { ...config, ...newConfig };
+      
+      const baseSize = config.font_size || defaultConfig.font_size;
+      const customFont = config.font_family || defaultConfig.font_family;
+      const baseFontStack = 'Inter, sans-serif';
+      const headingFontStack = 'Montserrat, sans-serif';
+
+      document.body.style.backgroundColor = config.background_color || defaultConfig.background_color;
+      document.body.style.fontFamily = `${customFont}, ${baseFontStack}`;
+      document.body.style.fontSize = `${baseSize}px`;
+
+      const pageTitle = document.getElementById('page-title');
+      if (pageTitle) {
+        pageTitle.textContent = config.page_title || defaultConfig.page_title;
+        pageTitle.style.color = config.text_color || defaultConfig.text_color;
+        pageTitle.style.fontFamily = `${customFont}, ${headingFontStack}`;
+        pageTitle.style.fontSize = `${baseSize * 2.5}px`;
+      }
+
+      const pageSubtitle = document.getElementById('page-subtitle');
+      if (pageSubtitle) {
+        pageSubtitle.textContent = config.page_subtitle || defaultConfig.page_subtitle;
+        pageSubtitle.style.fontFamily = `${customFont}, ${baseFontStack}`;
+        pageSubtitle.style.fontSize = `${baseSize * 1.125}px`;
+      }
+
+      const userName = document.getElementById('user-name');
+      if (userName) {
+        userName.textContent = config.user_name || defaultConfig.user_name;
+        userName.style.color = config.text_color || defaultConfig.text_color;
+        userName.style.fontFamily = `${customFont}, ${headingFontStack}`;
+        userName.style.fontSize = `${baseSize * 1.5}px`;
+      }
+
+      const userLevel = document.getElementById('user-level');
+      if (userLevel) {
+        userLevel.textContent = config.user_level || defaultConfig.user_level;
+        userLevel.style.fontFamily = `${customFont}, ${baseFontStack}`;
+        userLevel.style.fontSize = `${baseSize * 1.125}px`;
+      }
+
+      const userEmail = document.getElementById('user-email');
+      if (userEmail) {
+        userEmail.textContent = config.user_email || defaultConfig.user_email;
+        userEmail.style.fontFamily = `${customFont}, ${baseFontStack}`;
+      }
+
+      const userPhone = document.getElementById('user-phone');
+      if (userPhone) {
+        userPhone.textContent = config.user_phone || defaultConfig.user_phone;
+        userPhone.style.fontFamily = `${customFont}, ${baseFontStack}`;
+      }
+
+      const accountSettingsTitle = document.getElementById('account-settings-title');
+      if (accountSettingsTitle) {
+        accountSettingsTitle.textContent = config.account_settings_title || defaultConfig.account_settings_title;
+        accountSettingsTitle.style.color = config.text_color || defaultConfig.text_color;
+        accountSettingsTitle.style.fontFamily = `${customFont}, ${headingFontStack}`;
+        accountSettingsTitle.style.fontSize = `${baseSize * 1.5}px`;
+      }
+
+      const documentsTitle = document.getElementById('documents-title');
+      if (documentsTitle) {
+        documentsTitle.textContent = config.documents_title || defaultConfig.documents_title;
+        documentsTitle.style.color = config.text_color || defaultConfig.text_color;
+        documentsTitle.style.fontFamily = `${customFont}, ${headingFontStack}`;
+        documentsTitle.style.fontSize = `${baseSize * 1.5}px`;
+      }
+
+      const aiPreferencesTitle = document.getElementById('ai-preferences-title');
+      if (aiPreferencesTitle) {
+        aiPreferencesTitle.textContent = config.ai_preferences_title || defaultConfig.ai_preferences_title;
+        aiPreferencesTitle.style.color = config.text_color || defaultConfig.text_color;
+        aiPreferencesTitle.style.fontFamily = `${customFont}, ${headingFontStack}`;
+        aiPreferencesTitle.style.fontSize = `${baseSize * 1.5}px`;
+      }
+
+      const privacyTitle = document.getElementById('privacy-title');
+      if (privacyTitle) {
+        privacyTitle.textContent = config.privacy_title || defaultConfig.privacy_title;
+        privacyTitle.style.color = config.text_color || defaultConfig.text_color;
+        privacyTitle.style.fontFamily = `${customFont}, ${headingFontStack}`;
+        privacyTitle.style.fontSize = `${baseSize * 1.5}px`;
+      }
+
+      const footerText = document.getElementById('footer-text');
+      if (footerText) {
+        footerText.textContent = config.footer_text || defaultConfig.footer_text;
+        footerText.style.fontFamily = `${customFont}, ${baseFontStack}`;
+        footerText.style.fontSize = `${baseSize * 0.875}px`;
+      }
+
+      const allHeadings = document.querySelectorAll('h1, h2, h3, h4');
+      allHeadings.forEach(heading => {
+        if (!heading.id) {
+          heading.style.color = config.text_color || defaultConfig.text_color;
+          heading.style.fontFamily = `${customFont}, ${headingFontStack}`;
+        }
+      });
+
+      const allSurfaces = document.querySelectorAll('.bg-white');
+      allSurfaces.forEach(surface => {
+        surface.style.backgroundColor = config.surface_color || defaultConfig.surface_color;
+      });
+    }
+
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [
+          {
+            get: () => config.background_color || defaultConfig.background_color,
+            set: (value) => {
+              config.background_color = value;
+              window.elementSdk.setConfig({ background_color: value });
+            }
+          },
+          {
+            get: () => config.surface_color || defaultConfig.surface_color,
+            set: (value) => {
+              config.surface_color = value;
+              window.elementSdk.setConfig({ surface_color: value });
+            }
+          },
+          {
+            get: () => config.text_color || defaultConfig.text_color,
+            set: (value) => {
+              config.text_color = value;
+              window.elementSdk.setConfig({ text_color: value });
+            }
+          },
+          {
+            get: () => config.primary_action_color || defaultConfig.primary_action_color,
+            set: (value) => {
+              config.primary_action_color = value;
+              window.elementSdk.setConfig({ primary_action_color: value });
+            }
+          },
+          {
+            get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+            set: (value) => {
+              config.secondary_action_color = value;
+              window.elementSdk.setConfig({ secondary_action_color: value });
+            }
+          }
+        ],
+        borderables: [],
+        fontEditable: {
+          get: () => config.font_family || defaultConfig.font_family,
+          set: (value) => {
+            config.font_family = value;
+            window.elementSdk.setConfig({ font_family: value });
+          }
+        },
+        fontSizeable: {
+          get: () => config.font_size || defaultConfig.font_size,
+          set: (value) => {
+            config.font_size = value;
+            window.elementSdk.setConfig({ font_size: value });
+          }
+        }
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ['page_title', config.page_title || defaultConfig.page_title],
+        ['page_subtitle', config.page_subtitle || defaultConfig.page_subtitle],
+        ['user_name', config.user_name || defaultConfig.user_name],
+        ['user_level', config.user_level || defaultConfig.user_level],
+        ['user_email', config.user_email || defaultConfig.user_email],
+        ['user_phone', config.user_phone || defaultConfig.user_phone],
+        ['account_settings_title', config.account_settings_title || defaultConfig.account_settings_title],
+        ['documents_title', config.documents_title || defaultConfig.documents_title],
+        ['ai_preferences_title', config.ai_preferences_title || defaultConfig.ai_preferences_title],
+        ['privacy_title', config.privacy_title || defaultConfig.privacy_title],
+        ['footer_text', config.footer_text || defaultConfig.footer_text]
+      ]);
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a29a19cd054b811',t:'MTc2MzgyNzEzOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
