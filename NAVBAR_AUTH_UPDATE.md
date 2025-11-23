@@ -9,6 +9,18 @@ Updated the navigation bar and authentication flow to make Profile the primary e
 
 ---
 
+## Backend & Frontend Fixes
+
+This update also fixes several backend and frontend authentication issues discovered during testing:
+
+- Fixed a JSON serialization issue in `backend/app/main.py` where validation errors could include non-serializable bytes.
+- Fixed the login endpoint (`backend/app/api/v1/endpoints/auth.py`) to accept form-encoded parameters using FastAPI's `Form()` helper (resolves "Failed to fetch" from the frontend).
+- Improved frontend error handling to show clearer network-related messages (e.g., when the backend is down).
+
+These fixes make registration and login deterministic: users can register, then immediately log in and be redirected to `Profile`.
+
+---
+
 ## Changes Made
 
 ### 1. Navbar Layout Updates

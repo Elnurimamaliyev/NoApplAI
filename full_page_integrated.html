@@ -2418,15 +2418,27 @@
       const token = getToken();
       const userMenu = document.getElementById('user-menu');
       
+      console.log('checkAuth called - token exists:', !!token, 'userMenu found:', !!userMenu);
+      
       if (token) {
         // User is logged in - show user menu (notifications, avatar, logout)
-        if (userMenu) userMenu.classList.remove('hidden');
+        if (userMenu) {
+          userMenu.classList.remove('hidden');
+          // Ensure flex display is set for responsive behavior
+          userMenu.style.display = '';
+          console.log('User menu shown (logged in)');
+        }
         
         // Update UI with user data
         loadUserData();
       } else {
         // User is logged out - hide user menu
-        if (userMenu) userMenu.classList.add('hidden');
+        if (userMenu) {
+          userMenu.classList.add('hidden');
+          // Force hide with inline style as backup
+          userMenu.style.display = 'none';
+          console.log('User menu hidden (logged out)');
+        }
         
         // Clear any displayed user data
         clearUserDataFromUI();
@@ -2662,6 +2674,7 @@
     
     // Handle logout
     async function logout() {
+      console.log('Logout called');
       const token = getToken();
       
       if (token) {
@@ -2677,8 +2690,12 @@
         }
       }
       
+      // Clear all authentication data
       clearTokens();
+      
+      // Immediately update UI to hide user menu
       checkAuth();
+      
       showToast('Logged out successfully', 'success');
       navigateToPage('landing');
     }
