@@ -15,14 +15,14 @@ def generate_uuid():
 
 
 class DocumentType(str, enum.Enum):
-    CV_RESUME = "cv_resume"
-    TRANSCRIPT = "transcript"
-    PASSPORT_ID = "passport_id"
-    ENGLISH_TEST = "english_test"
-    RECOMMENDATION_LETTER = "recommendation_letter"
-    STATEMENT_OF_PURPOSE = "statement_of_purpose"
-    PORTFOLIO = "portfolio"
-    OTHER = "other"
+    CV_RESUME = "CV_RESUME"
+    TRANSCRIPT = "TRANSCRIPT"
+    ENGLISH_TEST = "ENGLISH_TEST"
+    LANGUAGE_CERTIFICATE = "ENGLISH_TEST"  # Alias for backwards compatibility
+    RECOMMENDATION_LETTER = "RECOMMENDATION_LETTER"
+    STATEMENT_OF_PURPOSE = "STATEMENT_OF_PURPOSE"
+    PORTFOLIO = "PORTFOLIO"
+    OTHER = "OTHER"
 
 
 class DocumentStatus(str, enum.Enum):

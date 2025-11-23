@@ -1630,20 +1630,20 @@
      <div class="flex items-center justify-between mb-5">
       <div>
        <h3 class="text-2xl font-black text-[#0A2540]">Document Progress</h3>
-       <p class="text-sm text-gray-600 font-semibold">3 of 4 documents uploaded</p>
+       <p id="progress-text" class="text-sm text-gray-600 font-semibold">0 of 3 documents uploaded</p>
       </div>
       <div class="text-right">
-       <p class="text-5xl font-black text-[#0A2540]">75%</p>
+       <p id="progress-percentage" class="text-5xl font-black text-[#0A2540]">0%</p>
        <p class="text-xs text-gray-600 font-bold">Complete</p>
       </div>
      </div>
      <div class="progress-bar" style="height: 10px;">
-      <div class="progress-bar-fill" style="width: 75%; background: linear-gradient(90deg, #5CE1E6 0%, #4AC9CE 50%, #38B8BD 100%);"></div>
+      <div id="progress-bar-fill" class="progress-bar-fill" style="width: 0%; background: linear-gradient(90deg, #5CE1E6 0%, #4AC9CE 50%, #38B8BD 100%);"></div>
      </div>
     </div><!-- Required Documents -->
     <div class="bg-white rounded-3xl p-10 shadow-lg mb-10 animate-slide-in-bottom">
      <div class="flex items-center justify-between mb-8">
-      <h2 class="text-3xl font-black text-[#0A2540]">Required Documents</h2><span class="badge badge-warning">1 Missing</span>
+      <h2 class="text-3xl font-black text-[#0A2540]">Required Documents</h2><span id="missing-badge" class="badge badge-warning">3 Missing</span>
      </div>
      <div class="grid md:grid-cols-2 gap-8" id="documents-grid"><!-- Documents will be rendered by JavaScript -->
      </div>
@@ -2017,12 +2017,15 @@
       }
     ];
     
-    const documents = [
-      { id: 1, name: 'CV / Resume', filename: '', size: '', status: 'missing', required: 'Upload your CV' },
-      { id: 2, name: 'Academic Transcript', filename: '', size: '', status: 'missing', required: 'Upload transcript' },
-      { id: 3, name: 'Passport / ID', filename: '', size: '', status: 'missing', required: 'Upload ID document' },
-      { id: 4, name: 'English Test Certificate', filename: '', size: '', status: 'missing', required: 'TOEFL / IELTS' }
+    // Define required documents (removed Passport/ID as per backend changes)
+    const REQUIRED_DOCUMENTS = [
+      { type: 'CV_RESUME', name: 'CV / Resume', required: 'Upload your CV' },
+      { type: 'TRANSCRIPT', name: 'Academic Transcript', required: 'Upload transcript' },
+      { type: 'ENGLISH_TEST', name: 'English Language Certificate', required: 'TOEFL / IELTS' }
     ];
+    
+    // Store loaded documents from backend
+    let documents = [];
     
     const applications = [
       {
@@ -2192,7 +2195,9 @@
         renderProgramsGrid();
         updateProgramsPageUI();
       }
-      if (pageId === 'upload') renderDocumentsGrid();
+      if (pageId === 'upload') {
+        loadDocuments(); // Load documents from backend
+      }
       if (pageId === 'applications') renderApplicationsList();
     }
     
@@ -2315,17 +2320,79 @@
     function renderDocumentsGrid() {
       const container = document.getElementById('documents-grid');
       if (!container) return;
-      container.innerHTML = documents.map(d => `
-        <div class="document-card ${d.status === 'uploaded' ? 'uploaded' : d.status === 'missing' ? 'missing' : ''}">
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="font-black text-[#0A2540]">${d.name}</p>
-              <p class="text-sm text-gray-600">${d.filename || d.required || 'Not provided'}</p>
+      
+      // If documents array is empty, initialize with required documents
+      if (documents.length === 0) {
+        documents = REQUIRED_DOCUMENTS.map(reqDoc => ({
+          id: null,
+          name: reqDoc.name,
+          filename: '',
+          size: '',
+          status: 'missing',
+          type: reqDoc.type,
+          required: reqDoc.required
+        }));
+      }
+      
+      container.innerHTML = documents.map(d => {
+        const uploadButtonId = `upload-${d.type}`;
+        const fileInputId = `file-input-${d.type}`;
+        
+        return `
+          <div class="document-card ${d.status === 'uploaded' ? 'uploaded' : d.status === 'missing' ? 'missing' : ''}">
+            <div class="flex items-center justify-between">
+              <div class="flex-1">
+                <p class="font-black text-[#0A2540]">${d.name}</p>
+                <p class="text-sm text-gray-600">${d.filename || d.required || 'Not provided'}</p>
+              </div>
+              <div class="text-sm font-bold flex items-center gap-3">
+                ${d.status === 'uploaded' 
+                  ? `<span class="text-gray-600">${d.size}</span>
+                     <span class='status-badge status-uploaded'>Uploaded</span>
+                     <button onclick="deleteDocument('${d.id}', '${d.name}')" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl text-sm transition-all duration-300">Delete</button>` 
+                  : `<button id="${uploadButtonId}" onclick="document.getElementById('${fileInputId}').click()" class="btn-primary px-4 py-2 rounded-xl text-sm">Upload</button>
+                     <input type="file" id="${fileInputId}" accept=".pdf,.jpg,.jpeg,.png,.docx" class="hidden" onchange="handleIndividualUpload(event, '${d.type}')">
+                     <span class='status-badge status-missing'>Missing</span>`
+                }
+              </div>
             </div>
-            <div class="text-sm font-bold">${d.status === 'uploaded' ? d.size : '<span class=\'status-badge status-missing\'>Missing</span>'}</div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
+    }
+    
+    // Handle individual document upload
+    async function handleIndividualUpload(event, documentType) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+      
+      const MAX_FILE_BYTES = 10 * 1024 * 1024; // 10MB
+      if (file.size > MAX_FILE_BYTES) {
+        showToast('File is too large. Maximum allowed size is 10MB.', 'error');
+        event.target.value = '';
+        return;
+      }
+
+      console.log(`Uploading ${documentType}:`, file.name);
+      
+      let success = false;
+      switch(documentType) {
+        case 'CV_RESUME':
+          success = await uploadCV(file);
+          break;
+        case 'TRANSCRIPT':
+          success = await uploadTranscript(file);
+          break;
+        case 'ENGLISH_TEST':
+          success = await uploadLanguageCertificate(file);
+          break;
+        default:
+          showToast('Unknown document type', 'error');
+          return;
+      }
+      
+      // Clear the file input so the same file can be uploaded again if needed
+      event.target.value = '';
     }
 
     function renderApplicationsList() {
@@ -2369,20 +2436,74 @@
     // ==================== UPLOAD / DRAG & DROP ====================
     function handleDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('dragover'); }
     function handleDragLeave(e) { e.currentTarget.classList.remove('dragover'); }
-    function handleDrop(e) {
+    async function handleDrop(e) {
       e.preventDefault();
       e.currentTarget.classList.remove('dragover');
       const files = Array.from(e.dataTransfer.files || []);
-      files.forEach(f => documents.push({ id: Date.now()+Math.random(), name: f.name, filename: f.name, size: (f.size/1024/1024).toFixed(2) + ' MB', status: 'uploaded' }));
-      renderDocumentsGrid();
-      showToast('Files uploaded', 'success');
+      
+      // Create a fake event object for handleFileUpload
+      const fakeEvent = {
+        target: {
+          files: files,
+          value: ''
+        }
+      };
+      
+      await handleFileUpload(fakeEvent);
     }
 
-    function handleFileUpload(e) {
+    async function handleFileUpload(e) {
       const files = Array.from(e.target.files || []);
-      files.forEach(f => documents.push({ id: Date.now()+Math.random(), name: f.name, filename: f.name, size: (f.size/1024/1024).toFixed(2) + ' MB', status: 'uploaded' }));
-      renderDocumentsGrid();
-      showToast('Files uploaded', 'success');
+      if (files.length === 0) return;
+      
+      showToast(`Uploading ${files.length} file(s)...`, 'info');
+      
+      let successCount = 0;
+      for (const file of files) {
+        const MAX_FILE_BYTES = 10 * 1024 * 1024; // 10MB
+        if (file.size > MAX_FILE_BYTES) {
+          showToast(`${file.name} is too large (max 10MB). Skipping.`, 'error');
+          continue;
+        }
+        // Try to detect document type from filename
+        const filename = file.name.toLowerCase();
+        let success = false;
+        
+        if (filename.includes('cv') || filename.includes('resume')) {
+          success = await uploadCV(file);
+        } else if (filename.includes('transcript') || filename.includes('grade')) {
+          success = await uploadTranscript(file);
+        } else if (filename.includes('toefl') || filename.includes('ielts') || filename.includes('language') || filename.includes('english')) {
+          success = await uploadLanguageCertificate(file);
+        } else {
+          // If we can't detect, try CV first, then transcript, then language cert
+          const missingDoc = documents.find(d => d.status === 'missing');
+          if (missingDoc) {
+            switch(missingDoc.type) {
+              case 'CV_RESUME':
+                success = await uploadCV(file);
+                break;
+              case 'TRANSCRIPT':
+                success = await uploadTranscript(file);
+                break;
+              case 'ENGLISH_TEST':
+                success = await uploadLanguageCertificate(file);
+                break;
+            }
+          }
+        }
+        
+        if (success) successCount++;
+      }
+      
+      if (successCount > 0) {
+        showToast(`Successfully uploaded ${successCount} of ${files.length} file(s)`, 'success');
+      } else {
+        showToast('No files were uploaded', 'error');
+      }
+      
+      // Clear the file input
+      e.target.value = '';
     }
 
     function saveDocuments() { showToast('Documents saved', 'success'); navigateToPage('dashboard'); }
@@ -2852,6 +2973,295 @@
       navigateToPage('landing');
     }
     
+    // ==================== DOCUMENT MANAGEMENT ====================
+    
+    // Load documents from backend
+    async function loadDocuments() {
+      const token = getToken();
+      if (!token) {
+        console.log('No token, cannot load documents');
+        return;
+      }
+      
+      try {
+        console.log('Loading documents with token:', token.substring(0, 20) + '...');
+        
+        const response = await fetch(`${API_BASE_URL}/documents/`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        console.log('Load documents response status:', response.status);
+        
+        if (!response.ok) {
+          // Handle authentication errors
+          if (response.status === 401 || response.status === 403) {
+            console.error('Authentication failed, token may be expired');
+            clearTokens();
+            showToast('Your session has expired. Please log in again.', 'error');
+            navigateToPage('login');
+            return;
+          }
+          throw new Error('Failed to load documents');
+        }
+        
+        const backendDocs = await response.json();
+        
+        // Map backend documents to frontend format
+        documents = REQUIRED_DOCUMENTS.map(reqDoc => {
+          const backendDoc = backendDocs.find(bd => {
+            // Match by document type
+            return bd.document_type === reqDoc.type;
+          });
+          
+          if (backendDoc) {
+            return {
+              id: backendDoc.id,
+              name: reqDoc.name,
+              filename: backendDoc.file_path ? backendDoc.file_path.split('/').pop() : '',
+              size: backendDoc.file_size ? (backendDoc.file_size / 1024 / 1024).toFixed(2) + ' MB' : '',
+              status: backendDoc.status === 'pending_verification' || backendDoc.status === 'verified' ? 'uploaded' : 'missing',
+              type: reqDoc.type,
+              required: reqDoc.required
+            };
+          } else {
+            return {
+              id: null,
+              name: reqDoc.name,
+              filename: '',
+              size: '',
+              status: 'missing',
+              type: reqDoc.type,
+              required: reqDoc.required
+            };
+          }
+        });
+        
+        console.log('Loaded documents:', documents);
+        renderDocumentsGrid();
+        updateProgressBar();
+      } catch (error) {
+        console.error('Error loading documents:', error);
+        showToast('Failed to load documents', 'error');
+      }
+    }
+    
+    // Upload CV
+    async function uploadCV(file) {
+      return await uploadDocument(file, 'cv', 'CV / Resume');
+    }
+    
+    // Upload Transcript
+    async function uploadTranscript(file) {
+      return await uploadDocument(file, 'transcript', 'Academic Transcript');
+    }
+    
+    // Upload Language Certificate
+    async function uploadLanguageCertificate(file) {
+      return await uploadDocument(file, 'language-certificate', 'English Language Certificate');
+    }
+    
+    // Generic document upload function
+    async function uploadDocument(file, endpoint, documentName) {
+      const token = getToken();
+      if (!token) {
+        showToast('Please login to upload documents', 'error');
+        navigateToPage('login');
+        return false;
+      }
+      
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        console.log('Uploading document:', {
+          endpoint: `${API_BASE_URL}/documents/upload/${endpoint}`,
+          fileName: file.name,
+          fileSize: file.size,
+          hasToken: !!token,
+          tokenPreview: token ? token.substring(0, 20) + '...' : 'none'
+        });
+        
+        const response = await fetch(`${API_BASE_URL}/documents/upload/${endpoint}`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: formData
+        });
+        
+        console.log('Upload response status:', response.status);
+        
+        if (!response.ok) {
+          // Handle authentication errors
+          if (response.status === 401 || response.status === 403) {
+            console.error('Authentication failed, token may be expired');
+            clearTokens();
+            showToast('Your session has expired. Please log in again.', 'error');
+            navigateToPage('login');
+            return false;
+          }
+          
+          const error = await response.json();
+          console.error('Upload error response:', error);
+          throw new Error(error.detail || 'Upload failed');
+        }
+        
+        const result = await response.json();
+        console.log('Upload success:', result);
+        showToast(`${documentName} uploaded successfully`, 'success');
+        
+        // Reload documents to update the grid
+        await loadDocuments();
+        return true;
+      } catch (error) {
+        console.error(`Error uploading ${documentName}:`, error);
+        showToast(error.message || `Failed to upload ${documentName}`, 'error');
+        return false;
+      }
+    }
+
+    // Delete a document by id
+    async function deleteDocument(documentId, documentType) {
+      const token = getToken();
+      if (!token) {
+        showToast('Please login to delete documents', 'error');
+        navigateToPage('login');
+        return false;
+      }
+
+      if (!documentId) {
+        showToast('Cannot delete: missing document ID', 'error');
+        return false;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/documents/${documentId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.status === 204 || response.ok) {
+          showToast('Document removed', 'success');
+          // Refresh documents and progress
+          await loadDocuments();
+          return true;
+        }
+
+        // Try to parse error body
+        let errBody = null;
+        try { errBody = await response.json(); } catch (e) { errBody = null; }
+        const msg = errBody?.detail || `Failed to delete document (${response.status})`;
+        console.error('Delete error:', msg, errBody);
+        showToast(msg, 'error');
+        return false;
+      } catch (err) {
+        console.error('Network error deleting document:', err);
+        showToast('Failed to delete document', 'error');
+        return false;
+      }
+    }
+    
+    // Delete document
+    async function deleteDocument(documentId, documentName) {
+      const token = getToken();
+      if (!token) {
+        showToast('Please login to delete documents', 'error');
+        navigateToPage('login');
+        return false;
+      }
+      
+      // Confirm deletion
+      if (!confirm(`Are you sure you want to delete ${documentName}? This action cannot be undone.`)) {
+        return false;
+      }
+      
+      try {
+        console.log(`Deleting document: ${documentId} (${documentName})`);
+        
+        const response = await fetch(`${API_BASE_URL}/documents/${documentId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        console.log('Delete response status:', response.status);
+        
+        if (!response.ok) {
+          // Handle authentication errors
+          if (response.status === 401 || response.status === 403) {
+            console.error('Authentication failed, token may be expired');
+            clearTokens();
+            showToast('Your session has expired. Please log in again.', 'error');
+            navigateToPage('login');
+            return false;
+          }
+          
+          if (response.status === 404) {
+            showToast('Document not found', 'error');
+            return false;
+          }
+          
+          const error = await response.json().catch(() => ({}));
+          console.error('Delete error response:', error);
+          throw new Error(error.detail || 'Delete failed');
+        }
+        
+        console.log('Delete success');
+        showToast(`${documentName} deleted successfully`, 'success');
+        
+        // Reload documents to update the grid
+        await loadDocuments();
+        return true;
+      } catch (error) {
+        console.error(`Error deleting ${documentName}:`, error);
+        showToast(error.message || `Failed to delete ${documentName}`, 'error');
+        return false;
+      }
+    }
+    
+    // Update progress bar based on uploaded documents
+    function updateProgressBar() {
+      const uploadedCount = documents.filter(d => d.status === 'uploaded').length;
+      const totalCount = REQUIRED_DOCUMENTS.length;
+      const percentage = Math.round((uploadedCount / totalCount) * 100);
+      
+      // Update progress text
+      const progressText = document.getElementById('progress-text');
+      if (progressText) {
+        progressText.textContent = `${uploadedCount} of ${totalCount} documents uploaded`;
+      }
+      
+      // Update percentage
+      const percentageText = document.getElementById('progress-percentage');
+      if (percentageText) {
+        percentageText.textContent = `${percentage}%`;
+      }
+      
+      // Update progress bar width
+      const progressBar = document.getElementById('progress-bar-fill');
+      if (progressBar) {
+        progressBar.style.width = `${percentage}%`;
+      }
+      
+      // Update missing badge
+      const missingCount = totalCount - uploadedCount;
+      const missingBadge = document.getElementById('missing-badge');
+      if (missingBadge) {
+        if (missingCount === 0) {
+          missingBadge.className = 'badge badge-success';
+          missingBadge.textContent = 'All Uploaded ✓';
+        } else {
+          missingBadge.className = 'badge badge-warning';
+          missingBadge.textContent = `${missingCount} Missing`;
+        }
+      }
+    }
+    
     // Fetch API with authentication
     async function fetchWithAuth(url, options = {}) {
       const token = getToken();
@@ -2880,16 +3290,23 @@
       // Check authentication status on load
       checkAuth();
       
+      // Initialize upload page with empty documents
+      renderDocumentsGrid(); // This will show all 3 required documents as missing
+      updateProgressBar(); // This will show 0 of 3, 0%
+      
       // If user is logged in, show their data
       const token = getToken();
       if (token) {
         loadUserData();
+        // Load documents from backend if on upload page
+        if (currentPage === 'upload') {
+          loadDocuments();
+        }
       }
       
       renderNotifications();
       updateNotificationBadge();
       renderProgramsGrid();
-      renderDocumentsGrid();
       renderApplicationsList();
       updateNotificationBadge();
       const uploadZone = document.querySelector('.upload-zone');

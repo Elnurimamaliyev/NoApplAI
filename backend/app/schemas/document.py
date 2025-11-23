@@ -4,33 +4,31 @@ from datetime import datetime
 from app.models.document import DocumentType, DocumentStatus
 
 
-class DocumentUpload(BaseModel):
-    filename: str
-    document_type: DocumentType
-    application_id: Optional[int] = None
-
-
 class DocumentUpdate(BaseModel):
     document_type: Optional[DocumentType] = None
-    application_id: Optional[int] = None
+    application_id: Optional[str] = None
     status: Optional[DocumentStatus] = None
     validation_score: Optional[int] = None
-    validation_feedback: Optional[str] = None
+    validation_notes: Optional[str] = None
 
 
 class DocumentResponse(BaseModel):
-    id: int
-    user_id: int
+    id: str
+    user_id: str
+    document_type: DocumentType
+    name: Optional[str] = None
     filename: str
     file_path: str
     file_size: int
-    document_type: DocumentType
+    mime_type: Optional[str] = None
     status: DocumentStatus
-    application_id: Optional[int] = None
+    is_verified: Optional[bool] = False
     validation_score: Optional[int] = None
-    validation_feedback: Optional[str] = None
-    uploaded_at: datetime
-    updated_at: datetime
+    validation_notes: Optional[str] = None
+    application_id: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+    verified_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True

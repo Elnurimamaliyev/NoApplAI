@@ -9,7 +9,7 @@ import uuid
 from app.core.database import get_db
 from app.models.user import User
 from app.models.document import Document, DocumentType, DocumentStatus
-from app.models.activity import Activity
+from app.models.activity import Activity, ActivityType
 from app.dependencies.auth import get_current_active_user
 from app.schemas.document import DocumentResponse, DocumentUpdate, DocumentWithUrl
 
@@ -38,7 +38,7 @@ async def list_documents(
     if application_id:
         query = query.where(Document.application_id == application_id)
     
-    query = query.offset(skip).limit(limit).order_by(Document.uploaded_at.desc())
+    query = query.offset(skip).limit(limit).order_by(Document.created_at.desc())
     
     result = await db.execute(query)
     documents = result.scalars().all()
@@ -48,7 +48,7 @@ async def list_documents(
 
 @router.get("/{document_id}", response_model=DocumentWithUrl)
 async def get_document(
-    document_id: int,
+    document_id: str,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ):
@@ -64,64 +64,113 @@ async def get_document(
     if not document:
         raise HTTPException(status_code=404, detail="Document not found")
     
-    # TODO: Generate presigned S3 URL
     download_url = f"/api/v1/documents/{document_id}/download"
-    
     doc_dict = document.to_dict()
     doc_dict['download_url'] = download_url
-    
     return DocumentWithUrl(**doc_dict)
 
 
-@router.post("/upload", response_model=DocumentResponse, status_code=201)
-async def upload_document(
+def _validate_and_store(file: UploadFile, expected_types: List[str], current_user: User):
+    """Helper placeholder to validate file types and generate paths.
+    Note: actual S3/MinIO upload should be implemented in production.
+    Returns file_path string.
+    """
+    # Validate filename
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="No file provided")
+
+    # Basic mime/type check could be added here
+    file_extension = os.path.splitext(file.filename)[1].lower()
+    unique_filename = f"{uuid.uuid4()}{file_extension}"
+    file_path = f"documents/{current_user.id}/{unique_filename}"
+
+    return file_path
+
+
+@router.post("/upload/cv", response_model=DocumentResponse, status_code=201)
+async def upload_cv(
     file: UploadFile = File(...),
-    document_type: DocumentType = Query(...),
-    application_id: Optional[int] = Query(None),
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ):
-    """Upload a new document"""
-    # Validate file
-    if not file.filename:
-        raise HTTPException(status_code=400, detail="No file provided")
-    
-    # Generate unique filename
-    file_extension = os.path.splitext(file.filename)[1]
-    unique_filename = f"{uuid.uuid4()}{file_extension}"
-    file_path = f"documents/{current_user.id}/{unique_filename}"
-    
-    # TODO: Upload to S3/MinIO
-    # For now, save file size from content
+    """Upload CV / Resume"""
+    file_path = _validate_and_store(file, ['.pdf', '.doc', '.docx'], current_user)
     content = await file.read()
     file_size = len(content)
-    
-    # Create document record
+
     document = Document(
         user_id=current_user.id,
+        name="CV / Resume",
         filename=file.filename,
         file_path=file_path,
         file_size=file_size,
-        document_type=document_type,
-        status=DocumentStatus.PENDING,
-        application_id=application_id
+        mime_type=file.content_type or 'application/octet-stream',
+        document_type=DocumentType.CV_RESUME,
+        status=DocumentStatus.PENDING_VERIFICATION
     )
-    
     db.add(document)
-    
-    # Log activity
-    activity = Activity(
-        user_id=current_user.id,
-        action_type="document_uploaded",
-        description=f"Uploaded {document_type} document: {file.filename}",
-        related_entity_type="document",
-        related_entity_id=document.id
-    )
+    activity = Activity(user_id=current_user.id, activity_type=ActivityType.DOCUMENT_UPLOAD, title="CV uploaded", description=f"Uploaded CV: {file.filename}", related_document_id=document.id)
     db.add(activity)
-    
     await db.commit()
     await db.refresh(document)
-    
+    return document
+
+
+@router.post("/upload/transcript", response_model=DocumentResponse, status_code=201)
+async def upload_transcript(
+    file: UploadFile = File(...),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
+):
+    """Upload Academic Transcript"""
+    file_path = _validate_and_store(file, ['.pdf'], current_user)
+    content = await file.read()
+    file_size = len(content)
+
+    document = Document(
+        user_id=current_user.id,
+        name="Academic Transcript",
+        filename=file.filename,
+        file_path=file_path,
+        file_size=file_size,
+        mime_type=file.content_type or 'application/pdf',
+        document_type=DocumentType.TRANSCRIPT,
+        status=DocumentStatus.PENDING_VERIFICATION
+    )
+    db.add(document)
+    activity = Activity(user_id=current_user.id, activity_type=ActivityType.DOCUMENT_UPLOAD, title="Transcript uploaded", description=f"Uploaded Transcript: {file.filename}", related_document_id=document.id)
+    db.add(activity)
+    await db.commit()
+    await db.refresh(document)
+    return document
+
+
+@router.post("/upload/language-certificate", response_model=DocumentResponse, status_code=201)
+async def upload_language_certificate(
+    file: UploadFile = File(...),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
+):
+    """Upload Language Certificate (e.g., IELTS/TOEFL)"""
+    file_path = _validate_and_store(file, ['.pdf'], current_user)
+    content = await file.read()
+    file_size = len(content)
+
+    document = Document(
+        user_id=current_user.id,
+        name="Language Certificate",
+        filename=file.filename,
+        file_path=file_path,
+        file_size=file_size,
+        mime_type=file.content_type or 'application/pdf',
+        document_type=DocumentType.ENGLISH_TEST,
+        status=DocumentStatus.PENDING_VERIFICATION
+    )
+    db.add(document)
+    activity = Activity(user_id=current_user.id, activity_type=ActivityType.DOCUMENT_UPLOAD, title="Language certificate uploaded", description=f"Uploaded Language Certificate: {file.filename}", related_document_id=document.id)
+    db.add(activity)
+    await db.commit()
+    await db.refresh(document)
     return document
 
 
@@ -157,7 +206,7 @@ async def update_document(
 
 @router.delete("/{document_id}", status_code=204)
 async def delete_document(
-    document_id: int,
+    document_id: str,
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_active_user)
 ):
@@ -174,6 +223,15 @@ async def delete_document(
         raise HTTPException(status_code=404, detail="Document not found")
     
     # TODO: Delete from S3/MinIO
+    
+    # Log activity
+    activity = Activity(
+        user_id=current_user.id,
+        activity_type=ActivityType.DOCUMENT_UPLOAD,
+        title=f"{document.name} deleted",
+        description=f"Deleted document: {document.filename}"
+    )
+    db.add(activity)
     
     await db.delete(document)
     await db.commit()

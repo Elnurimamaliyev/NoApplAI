@@ -282,21 +282,23 @@ Match scores are calculated based on:
 ### Supported Document Types
 - CV/Resume (.pdf, .docx)
 - Academic Transcripts (.pdf)
-- Passport/ID (.jpg, .png, .pdf)
+- Passport/ID (.jpg, .png, .pdf)  # NOTE: Passport/ID upload is deprecated; use CV/Transcript/Language Certificate endpoints
 - English Test Certificates (.pdf)
 - Recommendation Letters (.pdf, .docx)
 - Statement of Purpose (.pdf, .docx)
 
-### Upload Endpoint
+### Upload Endpoints
+
+Use specific endpoints for each required document type:
 
 ```http
-POST /api/v1/documents/upload
+POST /api/v1/documents/upload/cv
+POST /api/v1/documents/upload/transcript
+POST /api/v1/documents/upload/language-certificate
 Authorization: Bearer {token}
 Content-Type: multipart/form-data
 
 file: (binary)
-document_type: "cv_resume"
-name: "My CV"
 ```
 
 ### File Validation
