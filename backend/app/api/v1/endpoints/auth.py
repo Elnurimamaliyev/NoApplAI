@@ -208,6 +208,94 @@ async def get_current_user_info(
         )
 
 
+@router.put("/profile", response_model=UserResponse)
+async def update_profile(
+    full_name: Optional[str] = None,
+    phone: Optional[str] = None,
+    location: Optional[str] = None,
+    current_degree: Optional[str] = None,
+    current_major: Optional[str] = None,
+    gpa: Optional[float] = None,
+    bio: Optional[str] = None,
+    authorization: Optional[str] = Header(None),
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Update current user's profile information
+    """
+    if not authorization:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    # Remove 'Bearer ' prefix
+    token = authorization.replace('Bearer ', '') if authorization.startswith('Bearer ') else authorization
+    
+    try:
+        payload = decode_token(token)
+        user_id = payload.get("sub")
+        
+        if not user_id:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid token"
+            )
+        
+        result = await db.execute(select(User).where(User.id == user_id))
+        user = result.scalar_one_or_none()
+        
+        if not user or not user.is_active:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="User not found or inactive"
+            )
+        
+        # Update fields if provided
+        if full_name is not None:
+            user.full_name = full_name
+        if phone is not None:
+            user.phone = phone
+        if location is not None:
+            user.location = location
+        if current_degree is not None:
+            user.current_degree = current_degree
+        if current_major is not None:
+            user.current_major = current_major
+        if gpa is not None:
+            user.gpa = str(gpa)  # Convert to string for VARCHAR field
+        if bio is not None:
+            user.bio = bio
+        
+        # Calculate profile completion
+        fields_filled = sum([
+            bool(user.full_name),
+            bool(user.email),
+            bool(user.phone),
+            bool(user.location),
+            bool(user.current_degree),
+            bool(user.current_major),
+            bool(user.gpa),
+            bool(user.bio),
+        ])
+        user.profile_completion = str(int((fields_filled / 8) * 100))
+        
+        user.updated_at = datetime.utcnow()
+        await db.commit()
+        await db.refresh(user)
+        
+        return UserResponse.model_validate(user)
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error updating profile: {str(e)}"
+        )
+
+
 @router.post("/logout", status_code=status.HTTP_204_NO_CONTENT)
 async def logout():
     """
