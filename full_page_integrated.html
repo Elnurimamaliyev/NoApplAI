@@ -2134,6 +2134,73 @@
       }
     };
     
+    // ==================== DASHBOARD STATE MANAGER ====================
+    const DashboardState = {
+      data: null,
+      listeners: [],
+      
+      async init() {
+        await this.refresh();
+      },
+      
+      async refresh() {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+        
+        try {
+          const response = await fetch(`${API_BASE_URL}/dashboard/`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+          
+          if (response.ok) {
+            this.data = await response.json();
+            this.notify();
+          }
+        } catch (error) {
+          console.error('Failed to fetch dashboard data:', error);
+        }
+      },
+      
+      subscribe(listener) {
+        this.listeners.push(listener);
+      },
+      
+      notify() {
+        this.listeners.forEach(listener => listener(this.data));
+      },
+      
+      getStats() {
+        if (!this.data) {
+          return {
+            total_applications: 0,
+            active_applications: 0,
+            submitted_applications: 0,
+            accepted_applications: 0,
+            documents_uploaded: 0,
+            profile_completion: 0,
+            upcoming_deadlines: 0
+          };
+        }
+        return this.data.stats;
+      },
+      
+      getActivities() {
+        return this.data?.recent_activities || [];
+      },
+      
+      getDeadlines() {
+        return this.data?.upcoming_deadlines || [];
+      },
+      
+      getUnreadNotifications() {
+        return this.data?.unread_notifications || 0;
+      }
+    };
+    
     const applications = [
       {
         id: 1,
@@ -2235,7 +2302,8 @@
     
     function updateNotificationBadge() {
       const badge = document.getElementById('notification-badge');
-      const unreadCount = notifications.filter(n => n.unread).length;
+      // Use real unread count from DashboardState
+      const unreadCount = DashboardState.getUnreadNotifications();
       badge.style.display = unreadCount > 0 ? 'block' : 'none';
     }
     
@@ -2261,9 +2329,17 @@
 
     // ==================== PAGE UI UPDATES ====================
     
-    // Update Dashboard with real document data
+    // Update Dashboard with real data
     function updateDashboard(stats) {
+      // Get both document and dashboard stats
       if (!stats) stats = DocumentState.getStats();
+      const dashboardStats = DashboardState.getStats();
+      
+      // Update active applications count
+      const applicationsCount = document.getElementById('applications-count');
+      if (applicationsCount) {
+        applicationsCount.textContent = dashboardStats.active_applications;
+      }
       
       // Update documents count
       const docCount = document.getElementById('documents-count');
@@ -2277,13 +2353,16 @@
         docProgressBar.style.width = `${stats.percentage}%`;
       }
       
-      // Update profile completion (documents are 30% of profile)
+      // Update upcoming deadlines count
+      const deadlinesCount = document.getElementById('deadlines-count');
+      if (deadlinesCount) {
+        deadlinesCount.textContent = dashboardStats.upcoming_deadlines;
+      }
+      
+      // Update profile completion
       const profileCompletion = document.getElementById('profile-completion');
       if (profileCompletion) {
-        const baseCompletion = 55; // Base profile fields
-        const docContribution = Math.round(stats.percentage * 0.30); // Documents contribute 30%
-        const totalCompletion = Math.min(100, baseCompletion + docContribution);
-        profileCompletion.textContent = `${totalCompletion}%`;
+        profileCompletion.textContent = `${dashboardStats.profile_completion}%`;
       }
     }
     
@@ -3321,8 +3400,11 @@
         console.log('Upload success:', result);
         showToast(`${documentName} uploaded successfully`, 'success');
         
-        // Refresh document state globally and update all pages
-        await DocumentState.refresh();
+        // Refresh both document and dashboard state globally
+        await Promise.all([
+          DocumentState.refresh(),
+          DashboardState.refresh()
+        ]);
         updateAllPages(DocumentState.getStats());
         
         return true;
@@ -3357,8 +3439,11 @@
 
         if (response.status === 204 || response.ok) {
           showToast('Document removed', 'success');
-          // Refresh document state globally and update all pages
-          await DocumentState.refresh();
+          // Refresh both document and dashboard state globally
+          await Promise.all([
+            DocumentState.refresh(),
+            DashboardState.refresh()
+          ]);
           updateAllPages(DocumentState.getStats());
           return true;
         }
@@ -3511,13 +3596,22 @@
       if (token) {
         loadUserData();
         
-        // Initialize document state globally
-        await DocumentState.init();
+        // Initialize both document and dashboard state globally
+        await Promise.all([
+          DocumentState.init(),
+          DashboardState.init()
+        ]);
         
         // Subscribe to document state changes for cross-page updates
         DocumentState.subscribe((stats) => {
           console.log('Document state changed, updating all pages:', stats);
           updateAllPages(stats);
+        });
+        
+        // Subscribe to dashboard state changes
+        DashboardState.subscribe((data) => {
+          console.log('Dashboard state changed, updating dashboard:', data);
+          updateDashboard();
         });
         
         // Initial update of all pages with current document state
