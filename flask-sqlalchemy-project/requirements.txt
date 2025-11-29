@@ -1,0 +1,25 @@
+# Core Flask and Web Framework
+Flask==3.0.0
+Flask-CORS==4.0.0
+werkzeug==3.0.1
+
+# Database
+SQLAlchemy==2.0.23
+psycopg2-binary==2.9.9
+alembic==1.13.0
+
+# Validation
+marshmallow==3.20.1
+email-validator==2.1.0
+
+# Environment and Configuration
+python-dotenv==1.0.0
+
+# Testing
+pytest==7.4.3
+pytest-cov==4.1.0
+pytest-flask==1.3.0
+faker==20.1.0
+
+# Development
+flask-shell-ipython==0.4.1
