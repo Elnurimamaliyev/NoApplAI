@@ -48,6 +48,7 @@ services:
       # Optional
       DEBUG: "True"
       ENVIRONMENT: development
+      CORS_ORIGINS: "http://localhost:3000,http://localhost:8000,http://localhost:8080"
     ports:
       - "8000:8000"
     volumes:
