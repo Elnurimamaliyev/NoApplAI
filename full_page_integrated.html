@@ -1592,14 +1592,20 @@
        <div class="flex-1 relative">
         <svg class="w-6 h-6 text-gray-400 absolute left-5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg><input type="text" id="program-search" placeholder="Search programs, universities, or locations..." class="w-full pl-14 pr-5 py-4 border-2 border-gray-200 rounded-2xl focus:border-[#5CE1E6] focus:outline-none font-semibold transition-all duration-300">
-       </div><select id="country-filter" class="px-5 py-4 border-2 border-gray-200 rounded-2xl focus:border-[#5CE1E6] focus:outline-none font-bold transition-all duration-300"> <option value="">All Countries</option> <option value="USA">USA</option> <option value="UK">UK</option> <option value="Canada">Canada</option> <option value="Australia">Australia</option> </select> <select id="degree-filter" class="px-5 py-4 border-2 border-gray-200 rounded-2xl focus:border-[#5CE1E6] focus:outline-none font-bold transition-all duration-300"> <option value="">All Degrees</option> <option value="Bachelor">Bachelor's</option> <option value="Master">Master's</option> <option value="PhD">PhD</option> </select> <button onclick="filterPrograms()" class="btn-secondary px-8 py-4 rounded-2xl font-black whitespace-nowrap ripple flex items-center gap-2">
+       </div><select id="country-filter" class="px-5 py-4 border-2 border-gray-200 rounded-2xl focus:border-[#5CE1E6] focus:outline-none font-bold transition-all duration-300" onchange="filterPrograms()"> <option value="">All Countries</option> <option value="Germany">Germany</option> <option value="Switzerland">Switzerland</option> <option value="USA">USA</option> <option value="Italy">Italy</option> <option value="Japan">Japan</option> </select> <select id="degree-filter" class="px-5 py-4 border-2 border-gray-200 rounded-2xl focus:border-[#5CE1E6] focus:outline-none font-bold transition-all duration-300" onchange="filterPrograms()"> <option value="">All Degrees</option> <option value="Master">Master</option> <option value="PhD">PhD</option> <option value="Research Position">Research Position</option> <option value="Internship">Internship</option> <option value="Fellowship/Scholarship">Fellowship/Scholarship</option> </select> <button onclick="filterPrograms()" class="btn-secondary px-8 py-4 rounded-2xl font-black whitespace-nowrap ripple flex items-center gap-2">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg> Search </button>
+       <button onclick="clearFilters()" class="btn-secondary px-6 py-4 rounded-2xl font-black whitespace-nowrap hover:bg-gray-100 transition">
+        Clear Filters
+       </button>
       </div><!-- Filter Chips -->
       <div class="flex flex-wrap gap-3"><span class="filter-chip" onclick="toggleFilter(this)">💰 Scholarships Available</span> <span class="filter-chip" onclick="toggleFilter(this)">⭐ High Match (85%+)</span> <span class="filter-chip" onclick="toggleFilter(this)">⚡ Fast Decision</span> <span class="filter-chip" onclick="toggleFilter(this)">🎯 No Application Fee</span> <span class="filter-chip" onclick="toggleFilter(this)">🌍 International Students</span>
       </div>
      </div>
     </div><!-- Programs Grid -->
+    <div class="mb-4">
+     <p id="programs-count" class="text-sm font-bold text-gray-600"></p>
+    </div>
     <div id="programs-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-10"><!-- Programs will be rendered by JavaScript -->
     </div><!-- AI Tip -->
     <div id="programs-ai-tip" class="bg-gradient-to-r from-cyan-50 via-blue-50 to-cyan-50 rounded-3xl p-8 border-2 border-[#5CE1E6] animate-slide-in-bottom">
@@ -1941,80 +1947,72 @@
     let activeFilters = [];
     
     // Sample data structures
-    const programs = [
-      {
-        id: 1,
-        name: 'Harvard University',
-        program: 'MSc Computer Science',
-        logo: 'H',
-        color: 'from-red-600 to-red-700',
-        match: 92,
-        location: 'USA',
-        tags: ['Scholarships', 'Fast Decision'],
-        deadline: 'Jan 15, 2024',
-        fee: '$75'
-      },
-      {
-        id: 2,
-        name: 'Stanford University',
-        program: 'MBA Program',
-        logo: 'S',
-        color: 'from-red-700 to-red-800',
-        match: 88,
-        location: 'USA',
-        tags: ['High Acceptance'],
-        deadline: 'Feb 1, 2024',
-        fee: '$100'
-      },
-      {
-        id: 3,
-        name: 'MIT',
-        program: 'MSc Engineering',
-        logo: 'M',
-        color: 'from-gray-800 to-black',
-        match: 85,
-        location: 'USA',
-        tags: ['Scholarships'],
-        deadline: 'Jan 5, 2024',
-        fee: '$85'
-      },
-      {
-        id: 4,
-        name: 'Oxford University',
-        program: 'MSc Mathematics',
-        logo: 'O',
-        color: 'from-blue-900 to-blue-950',
-        match: 82,
-        location: 'UK',
-        tags: ['Scholarships'],
-        deadline: 'Jan 20, 2024',
-        fee: '£75'
-      },
-      {
-        id: 5,
-        name: 'Cambridge',
-        program: 'MSc Artificial Intelligence',
-        logo: 'C',
-        color: 'from-blue-800 to-blue-900',
-        match: 78,
-        location: 'UK',
-        tags: ['Fast Decision'],
-        deadline: 'Feb 10, 2024',
-        fee: '£80'
-      },
-      {
-        id: 6,
-        name: 'Imperial College',
-        program: 'MSc Data Science',
-        logo: 'I',
-        color: 'from-purple-700 to-purple-800',
-        match: 75,
-        location: 'UK',
-        tags: ['No Fee'],
-        deadline: 'Jan 31, 2024',
-        fee: 'Free'
+    // Programs will be loaded from API
+    let programs = [];
+    
+    // Load programs from API
+    async function loadPrograms() {
+      console.log('loadPrograms() called');
+      const token = getToken();
+      console.log('Token exists:', !!token);
+      
+      if (!token) {
+        console.log('No token found, programs require authentication');
+        programs = [];
+        window.allPrograms = [];
+        renderProgramsGrid();
+        return;
       }
-    ];
+      
+      try {
+        console.log('Fetching programs from:', `${API_BASE_URL}/programs/`);
+        const response = await fetch(`${API_BASE_URL}/programs/`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({ detail: 'Unknown error' }));
+          console.error('API error:', errorData);
+          throw new Error(errorData.detail || 'Failed to fetch programs');
+        }
+        
+        const data = await response.json();
+        console.log('Received programs:', data.length);
+        
+        // Transform API data to match frontend format
+        programs = data.map(p => ({
+          id: p.id,
+          name: p.university_name,
+          program: p.program_name,
+          logo: p.university_name.charAt(0).toUpperCase(),
+          color: 'from-blue-600 to-blue-700',
+          match: 75, // Default match score (can be enhanced later with AI)
+          location: p.country,
+          tags: [],
+          deadline: p.deadline || 'Not specified',
+          fee: p.application_fee || 'Not specified',
+          url: p.program_url,
+          degree: p.degree_type,
+          description: p.description
+        }));
+        
+        // Store original programs for filtering
+        window.allPrograms = [...programs];
+        
+        console.log(`✓ Loaded ${programs.length} programs from API`);
+        renderProgramsGrid();
+      } catch (error) {
+        console.error('Error loading programs:', error);
+        showToast(`Failed to load programs: ${error.message}`, 'error');
+        programs = [];
+        window.allPrograms = [];
+        renderProgramsGrid();
+      }
+    }
     
     // Define required documents (removed Passport/ID as per backend changes)
     const REQUIRED_DOCUMENTS = [
@@ -2459,6 +2457,11 @@
       currentPage = pageId;
       document.querySelectorAll('.nav-link').forEach(a => a.classList.toggle('active', a.dataset.page === pageId));
       
+      // Save current route to localStorage for logged-in users
+      if (token && pageId !== 'login' && pageId !== 'register') {
+        localStorage.setItem('lastRoute', pageId);
+      }
+      
       // Load user data when navigating to authenticated areas
       if (token) {
         loadUserData();
@@ -2466,8 +2469,10 @@
       
       // Render page-specific content and update messaging
       if (pageId === 'programs') {
-        renderProgramsGrid();
+        loadPrograms(); // Load programs from API
         updateProgramsPageUI();
+        // Setup search functionality after a brief delay to ensure elements are loaded
+        setTimeout(() => setupProgramsSearch(), 100);
       }
       if (pageId === 'upload') {
         loadDocuments(); // Load documents from backend
@@ -2572,14 +2577,39 @@
     // ==================== RENDER HELPERS ====================
     function renderProgramsGrid() {
       const container = document.getElementById('programs-grid');
+      const countElement = document.getElementById('programs-count');
       if (!container) return;
       const isAuthenticated = !!getToken();
+      
+      // Update count
+      const totalPrograms = window.allPrograms?.length || 0;
+      if (countElement) {
+        if (programs.length === totalPrograms) {
+          countElement.textContent = `Showing all ${programs.length} programs`;
+        } else {
+          countElement.textContent = `Showing ${programs.length} of ${totalPrograms} programs`;
+        }
+      }
+      
+      // Show message if no programs
+      if (programs.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full text-center py-12">
+            <p class="text-gray-600 text-lg mb-4">
+              ${isAuthenticated 
+                ? (totalPrograms > 0 ? 'No programs match your filters. Try adjusting your search criteria.' : 'No programs available at the moment. Check back soon!') 
+                : 'Please <a href="#" onclick="navigateToPage(\'login\'); return false;" class="text-[#5CE1E6] hover:text-[#4AC9CE] font-black">log in</a> to view programs.'}
+            </p>
+          </div>
+        `;
+        return;
+      }
       
       container.innerHTML = programs.map(p => `
         <div class="bg-white rounded-2xl p-6 card-hover">
           <div class="flex items-center justify-between mb-4">
             <div class="flex items-center gap-3">
-              <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white font-black" style="background:linear-gradient(90deg,rgba(0,0,0,0.06),rgba(0,0,0,0.06));">${p.logo}</div>
+              <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white font-black" style="background:linear-gradient(90deg,#5CE1E6,#4AC9CE);">${p.logo}</div>
               <div>
                 <h3 class="font-black text-[#0A2540]">${p.name}</h3>
                 <p class="text-sm text-gray-600">${p.program}</p>
@@ -2587,9 +2617,11 @@
             </div>
             <span class="badge badge-success">${p.match}% Match</span>
           </div>
-          <p class="text-sm text-gray-600 mb-4">${p.location} • ${p.deadline}</p>
+          <p class="text-sm text-gray-600 mb-2">${p.location} • ${p.degree || 'Graduate'}</p>
+          <p class="text-sm text-gray-600 mb-4">Deadline: ${p.deadline}</p>
+          ${p.description ? `<p class="text-sm text-gray-500 mb-4 line-clamp-2">${p.description}</p>` : ''}
           <div class="flex gap-2">
-            <button onclick="viewProgramDetails(${p.id})" class="btn-primary px-4 py-3 rounded-xl font-black text-sm flex-1">View Details</button>
+            ${p.url ? `<a href="${p.url}" target="_blank" class="btn-primary px-4 py-3 rounded-xl font-black text-sm flex-1 text-center">View Details</a>` : `<button onclick="viewProgramDetails(${p.id})" class="btn-primary px-4 py-3 rounded-xl font-black text-sm flex-1">View Details</button>`}
             <button onclick="saveProgram(${p.id})" class="btn-secondary px-4 py-3 rounded-xl font-black text-sm" title="${isAuthenticated ? 'Save Program' : 'Login to save'}">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"></path>
@@ -2707,13 +2739,81 @@
       const query = document.getElementById('program-search')?.value?.toLowerCase() || '';
       const country = document.getElementById('country-filter')?.value || '';
       const degree = document.getElementById('degree-filter')?.value || '';
-      const filtered = programs.filter(p => {
+      
+      console.log('Filtering programs:', { query, country, degree });
+      
+      // Store original programs if not already stored
+      if (!window.allPrograms || window.allPrograms.length === 0) {
+        window.allPrograms = [...programs];
+      }
+      
+      // Filter from all programs
+      const filtered = window.allPrograms.filter(p => {
+        // Country filter
         if (country && p.location !== country) return false;
-        if (query && !(p.name.toLowerCase().includes(query) || p.program.toLowerCase().includes(query))) return false;
+        
+        // Degree filter
+        if (degree && p.degree !== degree) return false;
+        
+        // Search query - search in university name, program name, location, and description
+        if (query) {
+          const searchText = [
+            p.name,
+            p.program,
+            p.location,
+            p.description || ''
+          ].join(' ').toLowerCase();
+          
+          if (!searchText.includes(query)) return false;
+        }
+        
         return true;
       });
-      const container = document.getElementById('programs-grid');
-      container.innerHTML = filtered.map(p => `...`).join('');
+      
+      programs = filtered;
+      console.log(`Filtered to ${programs.length} programs`);
+      renderProgramsGrid();
+    }
+    
+    // Add real-time search on input
+    function setupProgramsSearch() {
+      const searchInput = document.getElementById('program-search');
+      if (searchInput) {
+        // Debounce search to avoid too many re-renders
+        let searchTimeout;
+        searchInput.addEventListener('input', () => {
+          clearTimeout(searchTimeout);
+          searchTimeout = setTimeout(() => {
+            filterPrograms();
+          }, 300);
+        });
+        
+        // Also trigger on Enter key
+        searchInput.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') {
+            clearTimeout(searchTimeout);
+            filterPrograms();
+          }
+        });
+      }
+    }
+    
+    // Clear all filters and show all programs
+    function clearFilters() {
+      const searchInput = document.getElementById('program-search');
+      const countryFilter = document.getElementById('country-filter');
+      const degreeFilter = document.getElementById('degree-filter');
+      
+      if (searchInput) searchInput.value = '';
+      if (countryFilter) countryFilter.value = '';
+      if (degreeFilter) degreeFilter.value = '';
+      
+      // Reset to all programs
+      if (window.allPrograms) {
+        programs = [...window.allPrograms];
+      }
+      
+      console.log('Filters cleared, showing all programs');
       renderProgramsGrid();
     }
 
@@ -3250,6 +3350,9 @@
       // Clear all authentication data
       clearTokens();
       
+      // Clear saved route
+      localStorage.removeItem('lastRoute');
+      
       // Immediately update UI to hide user menu
       checkAuth();
       
@@ -3586,12 +3689,26 @@
       // Check authentication status on load
       checkAuth();
       
+      // Restore last route for authenticated users
+      const token = getToken();
+      const lastRoute = localStorage.getItem('lastRoute');
+      
+      if (token && lastRoute && lastRoute !== 'landing') {
+        // User is authenticated and has a saved route - restore it
+        console.log('Restoring last route:', lastRoute);
+        currentPage = lastRoute;
+        navigateToPage(lastRoute);
+      } else if (!token) {
+        // User is not authenticated - clear saved route and show landing
+        localStorage.removeItem('lastRoute');
+        currentPage = 'landing';
+      }
+      
       // Initialize upload page with empty documents
       renderDocumentsGrid(); // This will show all 3 required documents as missing
       updateProgressBar(); // This will show 0 of 3, 0%
       
       // If user is logged in, initialize document state and update all pages
-      const token = getToken();
       if (token) {
         loadUserData();
         
@@ -3619,7 +3736,11 @@
       
       renderNotifications();
       updateNotificationBadge();
-      renderProgramsGrid();
+      
+      // Load programs if on programs page
+      if (currentPage === 'programs') {
+        loadPrograms();
+      }
       renderApplicationsList();
       updateNotificationBadge();
       const uploadZone = document.querySelector('.upload-zone');
