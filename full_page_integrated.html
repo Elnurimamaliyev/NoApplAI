@@ -2027,6 +2027,113 @@
     // Store loaded documents from backend
     let documents = [];
     
+    // ==================== GLOBAL DOCUMENT STATE MANAGER ====================
+    const DocumentState = {
+      documents: [],
+      listeners: [],
+      
+      // Initialize and fetch documents
+      async init() {
+        await this.refresh();
+      },
+      
+      // Fetch latest documents from backend
+      async refresh() {
+        const token = getToken();
+        if (!token) {
+          this.documents = [];
+          this.notify();
+          return;
+        }
+        
+        try {
+          const response = await fetch(`${API_BASE_URL}/documents/`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          
+          if (response.ok) {
+            const backendDocs = await response.json();
+            
+            // Map to required documents
+            this.documents = REQUIRED_DOCUMENTS.map(reqDoc => {
+              const backendDoc = backendDocs.find(bd => bd.document_type === reqDoc.type);
+              
+              if (backendDoc) {
+                return {
+                  id: backendDoc.id,
+                  name: reqDoc.name,
+                  filename: backendDoc.filename,
+                  size: backendDoc.file_size ? (backendDoc.file_size / 1024 / 1024).toFixed(2) + ' MB' : '',
+                  status: backendDoc.status === 'pending_verification' || backendDoc.status === 'verified' ? 'uploaded' : 'missing',
+                  type: reqDoc.type,
+                  required: reqDoc.required,
+                  backendData: backendDoc
+                };
+              } else {
+                return {
+                  id: null,
+                  name: reqDoc.name,
+                  filename: '',
+                  size: '',
+                  status: 'missing',
+                  type: reqDoc.type,
+                  required: reqDoc.required,
+                  backendData: null
+                };
+              }
+            });
+            
+            // Update global documents variable for backwards compatibility
+            documents = this.documents;
+            
+            console.log('DocumentState refreshed:', this.documents);
+            this.notify();
+          }
+        } catch (error) {
+          console.error('Error refreshing document state:', error);
+        }
+      },
+      
+      // Register a listener for document changes
+      subscribe(callback) {
+        this.listeners.push(callback);
+      },
+      
+      // Unregister a listener
+      unsubscribe(callback) {
+        this.listeners = this.listeners.filter(cb => cb !== callback);
+      },
+      
+      // Notify all listeners of changes
+      notify() {
+        this.listeners.forEach(callback => {
+          try {
+            callback(this.getStats());
+          } catch (error) {
+            console.error('Error in document state listener:', error);
+          }
+        });
+      },
+      
+      // Get statistics
+      getStats() {
+        const uploaded = this.documents.filter(d => d.status === 'uploaded').length;
+        const total = REQUIRED_DOCUMENTS.length;
+        const missing = total - uploaded;
+        const percentage = Math.round((uploaded / total) * 100);
+        
+        return {
+          uploaded,
+          missing,
+          total,
+          percentage,
+          documents: this.documents,
+          uploadedDocs: this.documents.filter(d => d.status === 'uploaded'),
+          missingDocs: this.documents.filter(d => d.status === 'missing')
+        };
+      }
+    };
+    
     const applications = [
       {
         id: 1,
@@ -2152,6 +2259,95 @@
       }, timeout);
     }
 
+    // ==================== PAGE UI UPDATES ====================
+    
+    // Update Dashboard with real document data
+    function updateDashboard(stats) {
+      if (!stats) stats = DocumentState.getStats();
+      
+      // Update documents count
+      const docCount = document.getElementById('documents-count');
+      if (docCount) {
+        docCount.textContent = `${stats.uploaded}/${stats.total}`;
+      }
+      
+      // Update documents progress bar
+      const docProgressBar = document.querySelector('#page-dashboard .stat-card:nth-child(2) .progress-bar-fill');
+      if (docProgressBar) {
+        docProgressBar.style.width = `${stats.percentage}%`;
+      }
+      
+      // Update profile completion (documents are 30% of profile)
+      const profileCompletion = document.getElementById('profile-completion');
+      if (profileCompletion) {
+        const baseCompletion = 55; // Base profile fields
+        const docContribution = Math.round(stats.percentage * 0.30); // Documents contribute 30%
+        const totalCompletion = Math.min(100, baseCompletion + docContribution);
+        profileCompletion.textContent = `${totalCompletion}%`;
+      }
+    }
+    
+    // Update Applications page with real document data
+    function updateApplicationsPage(stats) {
+      if (!stats) stats = DocumentState.getStats();
+      
+      // Update AI recommendations section to show missing documents
+      const aiSection = document.querySelector('#page-applications .bg-gradient-to-r.from-cyan-50');
+      if (aiSection && stats.missing > 0) {
+        const list = aiSection.querySelector('ul');
+        if (list) {
+          // Keep existing items but prepend document warnings
+          const existingItems = list.innerHTML;
+          let docWarnings = '';
+          
+          stats.missingDocs.forEach(doc => {
+            docWarnings += `<li class="flex items-start gap-3"><span class="text-red-500 mt-1 font-black">⚠️</span> <span><strong>Urgent:</strong> Upload ${doc.name} to complete your applications</span></li>`;
+          });
+          
+          list.innerHTML = docWarnings + existingItems;
+        }
+      }
+    }
+    
+    // Update Profile page with real completion percentage
+    function updateProfilePage(stats) {
+      if (!stats) stats = DocumentState.getStats();
+      
+      // Update profile completion ring
+      const progressRing = document.querySelector('#page-profile .progress-ring');
+      if (progressRing) {
+        const baseCompletion = 55;
+        const docContribution = Math.round(stats.percentage * 0.30);
+        const totalCompletion = Math.min(100, baseCompletion + docContribution);
+        
+        // Update SVG circle (circumference = 2 * PI * r = 2 * 3.14159 * 40 ≈ 251.2)
+        const circumference = 251.2;
+        const offset = circumference * (1 - totalCompletion / 100);
+        progressRing.style.strokeDashoffset = offset;
+        
+        // Update percentage text
+        const percentText = document.querySelector('#page-profile .text-5xl.font-black');
+        if (percentText && percentText.textContent.includes('%')) {
+          percentText.textContent = `${totalCompletion}%`;
+        }
+      }
+    }
+    
+    // Update all pages with document statistics
+    function updateAllPages(stats) {
+      updateDashboard(stats);
+      updateApplicationsPage(stats);
+      updateProfilePage(stats);
+      
+      // Update upload page
+      if (typeof renderDocumentsGrid === 'function') {
+        renderDocumentsGrid();
+      }
+      if (typeof updateProgressBar === 'function') {
+        updateProgressBar();
+      }
+    }
+    
     // ==================== PAGE NAVIGATION ====================
     
     // Store intended destination for post-login redirect
@@ -2198,7 +2394,17 @@
       if (pageId === 'upload') {
         loadDocuments(); // Load documents from backend
       }
-      if (pageId === 'applications') renderApplicationsList();
+      if (pageId === 'applications') {
+        renderApplicationsList();
+      }
+      if (pageId === 'dashboard' || pageId === 'profile' || pageId === 'applications') {
+        // Refresh document state when navigating to pages that display document stats
+        if (token) {
+          DocumentState.refresh().then(() => {
+            updateAllPages(DocumentState.getStats());
+          });
+        }
+      }
     }
     
     // Update Open Programs page UI based on authentication status
@@ -3041,6 +3247,9 @@
         console.log('Loaded documents:', documents);
         renderDocumentsGrid();
         updateProgressBar();
+        
+        // Notify all listeners of document changes
+        DocumentState.notify();
       } catch (error) {
         console.error('Error loading documents:', error);
         showToast('Failed to load documents', 'error');
@@ -3112,8 +3321,10 @@
         console.log('Upload success:', result);
         showToast(`${documentName} uploaded successfully`, 'success');
         
-        // Reload documents to update the grid
-        await loadDocuments();
+        // Refresh document state globally and update all pages
+        await DocumentState.refresh();
+        updateAllPages(DocumentState.getStats());
+        
         return true;
       } catch (error) {
         console.error(`Error uploading ${documentName}:`, error);
@@ -3146,8 +3357,9 @@
 
         if (response.status === 204 || response.ok) {
           showToast('Document removed', 'success');
-          // Refresh documents and progress
-          await loadDocuments();
+          // Refresh document state globally and update all pages
+          await DocumentState.refresh();
+          updateAllPages(DocumentState.getStats());
           return true;
         }
 
@@ -3286,7 +3498,7 @@
     }
 
     // ==================== INITIALIZATION ====================
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       // Check authentication status on load
       checkAuth();
       
@@ -3294,14 +3506,22 @@
       renderDocumentsGrid(); // This will show all 3 required documents as missing
       updateProgressBar(); // This will show 0 of 3, 0%
       
-      // If user is logged in, show their data
+      // If user is logged in, initialize document state and update all pages
       const token = getToken();
       if (token) {
         loadUserData();
-        // Load documents from backend if on upload page
-        if (currentPage === 'upload') {
-          loadDocuments();
-        }
+        
+        // Initialize document state globally
+        await DocumentState.init();
+        
+        // Subscribe to document state changes for cross-page updates
+        DocumentState.subscribe((stats) => {
+          console.log('Document state changed, updating all pages:', stats);
+          updateAllPages(stats);
+        });
+        
+        // Initial update of all pages with current document state
+        updateAllPages(DocumentState.getStats());
       }
       
       renderNotifications();
