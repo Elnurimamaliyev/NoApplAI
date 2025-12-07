@@ -33,7 +33,7 @@ async def list_programs(
         search_term = f"%{search}%"
         conditions.append(
             or_(
-                Program.university.ilike(search_term),
+                Program.university_name.ilike(search_term),
                 Program.program_name.ilike(search_term),
                 Program.description.ilike(search_term)
             )
@@ -43,7 +43,7 @@ async def list_programs(
         conditions.append(Program.degree_type == degree_type)
     
     if location:
-        conditions.append(Program.location.ilike(f"%{location}%"))
+        conditions.append(Program.country.ilike(f"%{location}%"))
     
     if min_deadline:
         conditions.append(Program.deadline >= min_deadline)
