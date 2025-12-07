@@ -3010,6 +3010,9 @@
         const userData = await response.json();
         localStorage.setItem('user_data', JSON.stringify(userData));
         
+        // Track profile update activity
+        await trackActivity('PROFILE_UPDATE', 'Profile Updated', 'User updated their profile information');
+        
         showToast('Profile updated successfully!', 'success');
         loadUserData();
         updateProfileCompletionUI(userData.profile_completion);
@@ -3067,6 +3070,33 @@
       localStorage.removeItem('user_data');
     }
     
+    // Track user activity (log actions to backend)
+    async function trackActivity(activityType, title, description) {
+      const token = getToken();
+      
+      if (!token) {
+        return; // Can't track without authentication
+      }
+      
+      try {
+        await fetch(`${API_BASE_URL}/activities`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            activity_type: activityType,
+            title: title,
+            description: description
+          })
+        });
+      } catch (error) {
+        console.error('Failed to track activity:', error);
+        // Don't show error to user for tracking failures
+      }
+    }
+    
     // Check authentication status
     function checkAuth() {
       const token = getToken();
@@ -3099,10 +3129,104 @@
       }
     }
     
-    // Load user data and update UI
-    function loadUserData() {
-      const userData = JSON.parse(localStorage.getItem('user_data') || '{}');
+    // Load user data and update UI (async version that fetches from backend)
+    async function loadUserData() {
+      const token = getToken();
       
+      if (!token) {
+        // No token, just clear UI
+        clearUserDataFromUI();
+        return;
+      }
+      
+      // First, load cached data immediately for faster UI update
+      const cachedUserData = JSON.parse(localStorage.getItem('user_data') || '{}');
+      if (cachedUserData.full_name) {
+        updateUserDataUI(cachedUserData);
+      }
+      
+      // Then fetch fresh data from backend to validate token and get latest info
+      try {
+        const response = await fetch(`${API_BASE_URL}/auth/me`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (!response.ok) {
+          if (response.status === 401) {
+            // Token expired or invalid, try to refresh
+            console.log('Token expired, attempting refresh...');
+            const refreshed = await attemptTokenRefresh();
+            if (refreshed) {
+              // Retry loading user data with new token
+              await loadUserData();
+              return;
+            } else {
+              // Refresh failed, log out
+              console.log('Token refresh failed, logging out...');
+              clearTokens();
+              checkAuth();
+              return;
+            }
+          }
+          throw new Error('Failed to fetch user data');
+        }
+        
+        const userData = await response.json();
+        
+        // Update localStorage with fresh data
+        localStorage.setItem('user_data', JSON.stringify(userData));
+        
+        // Update UI with fresh data
+        updateUserDataUI(userData);
+        
+        console.log('User data loaded and synced from backend');
+        
+      } catch (error) {
+        console.error('Error loading user data:', error);
+        // On network error, continue using cached data
+        if (cachedUserData.full_name) {
+          console.log('Using cached user data due to network error');
+        }
+      }
+    }
+    
+    // Attempt to refresh the access token using refresh token
+    async function attemptTokenRefresh() {
+      const refreshToken = localStorage.getItem('refresh_token');
+      
+      if (!refreshToken) {
+        return false;
+      }
+      
+      try {
+        const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ refresh_token: refreshToken })
+        });
+        
+        if (!response.ok) {
+          return false;
+        }
+        
+        const data = await response.json();
+        saveToken(data.access_token, data.refresh_token);
+        
+        console.log('Token refreshed successfully');
+        return true;
+        
+      } catch (error) {
+        console.error('Token refresh error:', error);
+        return false;
+      }
+    }
+    
+    // Update UI with user data
+    function updateUserDataUI(userData) {
       if (!userData.full_name) return;
       
       const firstInitial = userData.full_name.charAt(0).toUpperCase();
@@ -3241,22 +3365,23 @@
         }
         
         const data = await response.json();
+        
+        // Save tokens
         saveToken(data.access_token, data.refresh_token);
         
-        // Fetch user data
-        const userResponse = await fetch(`${API_BASE_URL}/auth/me`, {
-          headers: {
-            'Authorization': `Bearer ${data.access_token}`
-          }
-        });
-        
-        if (userResponse.ok) {
-          const userData = await userResponse.json();
-          localStorage.setItem('user_data', JSON.stringify(userData));
+        // Save user data from login response (includes user object)
+        if (data.user) {
+          localStorage.setItem('user_data', JSON.stringify(data.user));
         }
         
-        showToast('Login successful! Welcome back.', 'success');
+        // Update auth state and load fresh user data
         checkAuth();
+        await loadUserData(); // This will fetch latest data and validate token
+        
+        // Track login activity
+        await trackActivity('LOGIN', 'User Login', 'User logged into the system');
+        
+        showToast('Login successful! Welcome back.', 'success');
         
         // Check if there's an intended destination or action
         if (intendedDestination) {
@@ -3316,8 +3441,23 @@
         }
         
         const data = await response.json();
-        showToast('Account created successfully! Please log in.', 'success');
-        navigateToPage('login');
+        
+        // Auto-login after successful registration
+        // Save tokens and user data
+        saveToken(data.access_token, data.refresh_token);
+        
+        if (data.user) {
+          localStorage.setItem('user_data', JSON.stringify(data.user));
+        }
+        
+        showToast('Account created successfully! Welcome to NoApplAI!', 'success');
+        
+        // Update auth state and load user data
+        checkAuth();
+        await loadUserData();
+        
+        // Redirect to profile page to complete profile
+        navigateToPage('profile');
       } catch (error) {
         console.error('Registration error:', error);
         // Better error message for network errors
@@ -3336,6 +3476,9 @@
       
       if (token) {
         try {
+          // Track logout activity before clearing tokens
+          await trackActivity('LOGOUT', 'User Logout', 'User logged out of the system');
+          
           await fetch(`${API_BASE_URL}/auth/logout`, {
             method: 'POST',
             headers: {
