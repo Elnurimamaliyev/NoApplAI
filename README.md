@@ -304,7 +304,9 @@ This project is for educational and portfolio purposes.
 
 **Elnur Imamaliyev**
 - GitHub: [@Elnurimamaliyev](https://github.com/Elnurimamaliyev)
-- GitHub: [@GurbanaliFeyzullayev](https://github.com/qurbaneliii)
+
+**Gurbanali Feyzullayev**
+- GitHub: [@qurbaneliii](https://github.com/qurbaneliii)
 
 ---
 
